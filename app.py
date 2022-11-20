@@ -177,7 +177,7 @@ def adddept():
 def addemp():
     if request.method == "GET":
         cursor = mysql.connection.cursor()
-        cursor.execute('''SELECT type FROM department''')
+        cursor.execute('''SELECT * FROM department''')
         departments=cursor.fetchall()
         return render_template("addemp.html",departments=departments)
     else:
@@ -190,7 +190,7 @@ def addemp():
         salary= request.form.get("salary")
         dno= request.form.get("dno")
         cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO employee (gender,fname,lname,street,state,city,salary) VALUES(%s,%s,%s,%s,%s,%s,%s)''',(gender,fname,lname,street,state,city,salary))
+        cursor.execute(''' INSERT INTO employee (gender,fname,lname,street,state,city,salary,dno) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)''',(gender,fname,lname,street,state,city,salary,dno))
         mysql.connection.commit()
         cursor.close()
         flash('employee has been added successfully!')
@@ -202,16 +202,16 @@ def addmaintains():
         cursor = mysql.connection.cursor()
         cursor.execute('''SELECT scr_no FROM screen''')
         screens=cursor.fetchall()
-        cursor = mysql.connection.cursor()
-        cursor.execute('''SELECT type FROM department''')
-        departments=cursor.fetchall()
+        cursor1 = mysql.connection.cursor()
+        cursor1.execute('''SELECT * FROM department''')
+        departments=cursor1.fetchall()
         return render_template("addmaintains.html",screens=screens,departments=departments)
     else:
         dno= request.form.get("dno")
-        screen_no= request.form.get("screen_no")
+        scr_no= request.form.get("scr_no")
         
         cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO maintains (dno,screen_no) VALUES(%s,%s)''',(dno,screen_no))
+        cursor.execute(''' INSERT INTO maintains (dno,scr_no) VALUES(%s,%s)''',(dno,scr_no))
         mysql.connection.commit()
         cursor.close()
         flash('maintains relation has been added successfully!')
