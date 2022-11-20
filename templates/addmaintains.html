@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add movie
+{% endblock %}
+
+{% block main %}
+<form class="" action="/addmaintains" method="post">
+    <br>
+    Screen no:<select name="screen_no">
+        {% for screen in screens %}
+        <option value="{{screen[0]}}"> Screen {{screen[0]}} </option>
+        {% endfor %}
+        </select>
+    <br>
+    Department:<select name="dno">
+        {% for department in departments %}
+        <option value="{{department[0]}}"> {{department[1]}} </option>
+        {% endfor %}
+        </select>
+      <button type="submit" name="submit">maintains </button>
+    </form>
+{% endblock %}

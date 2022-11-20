@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add screen
+{% endblock %}
+
+{% block main %}
+<form class="" action="/addscreen" method="post">
+
+    Screen 
+    <br>
+      <input type="number" name="floor" placeholder="floor" value="" > <br>
+      <input type="number" name="scr_no" placeholder="scr_no" value="" > <br>
+      <input type="text" name="dimension" placeholder="dimension" value=""> <br>
+      <input type="number" name="capacity" placeholder="capacity" value=""> <br>
+      <button type="submit" name="submit">Add screen </button>
+    </form>
+{% endblock %}
