@@ -13,8 +13,10 @@
                     width: 40%;
                     padding: 2rem;
                     border-radius: 1rem;
+                    margin-bottom: 2rem; 
                 }
           </style>
+          {% for ticket in tickets %}
           <div class="ticket">
             <h5>
 
@@ -26,7 +28,7 @@
             Time: {{ticket[3]}}<br>
             Transaction id: {{ticket[5]}}<br>
           </div>
-          
+          {% endfor %}
             
 
 {% endblock %}

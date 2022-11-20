@@ -5,20 +5,121 @@
 {% endblock %}
 
 {% block main %}
-<h2>{{movieDetails}}</h2>
+<script>
+    var x= document.getElementById("mtime").selectedIndex = 0;
+</script>
 <form class="" action="/book/{{movieDetails[0]}}" method="post">
+    <h2>{{movieDetails[4]}}</h2><br>
     <!-- <input type="number" name="tic_id" placeholder="empid" tic_id="" > <br> -->
     <!-- <input type="number" name="screen_no" placeholder="screen_no" value="" > <br> -->
     <!-- <input type="number" name="movie_id" placeholder="movie_id" value="" > <br> -->
-    <input type="date" name="mdate" placeholder="mdate" value=""> <br>
-    <select name="mtime" id="">
+    <input id="datefield" type="date" name="mdate" placeholder="mdate" onchange="checkdate()" required> <br>
+    
+    <select name="mtime" id="mtime" required>
+        <option disabled> Please select option</option>
         <option value="9:00am"> 9:00am</option>
         <option value="12:00pm">12:00pm</option>
         <option value="5:00pm">5:00pm</option>
         <option value="8:00pm">8:00pm</option>
-    </select>
-
+    </select><br>
+    <input type="number" name="quantity" min="1" placeholder="Quantity" required><br>
     <button type="submit" name="submit">Book</button>
    
   </form>
+  <script>
+var oneweeklater = new Date(); 
+var d = oneweeklater.getDate()+7;
+var m = oneweeklater.getMonth() + 1; //January is 0!
+var y = oneweeklater.getFullYear();
+
+
+if (d < 10) {
+   d = '0' + d;
+}
+
+if (m < 10) {
+   m = '0' + m;
+} 
+var datepicker=document.getElementById("datefield")
+oneweeklater = y + '-' + m + '-' + d;
+datepicker.setAttribute("max", oneweeklater);
+
+
+
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth() + 1; //January is 0!
+var yyyy = today.getFullYear();
+
+
+if (dd < 10) {
+   dd = '0' + dd;
+}
+
+if (mm < 10) {
+   mm = '0' + mm;
+} 
+today = yyyy + '-' + mm + '-' + dd;
+
+var datepicker=document.getElementById("datefield")
+datepicker.setAttribute("min", today);
+
+function checkdate()
+{
+    var selectedDate=document.getElementById("datefield").value
+
+console.log("selected date: " +selectedDate)
+console.log(today)
+
+if ( selectedDate == today )
+{
+    console.log("in if: ")
+    var d = new Date();
+    var hh=d.getHours(); 
+    var mn=d.getMinutes();
+
+    if (hh < 10) {
+        hh = '0' + hh;
+    }
+
+    if (mn < 10) 
+    {
+        mn = '0' + mn;
+    } 
+    var currentTime=hh + ':' + mn
+    console.log("current time : " +currentTime)
+    
+    
+    
+     if (currentTime > '20:00')
+    {
+        var x= document.getElementById("mtime").options[1].disabled = true;
+        var x=document.getElementById("mtime").options[2].disabled = true;
+        var x=document.getElementById("mtime").options[3].disabled = true;
+        var x=document.getElementById("mtime").options[4].disabled = true;
+    }
+    else if (currentTime > '17:00')
+    {
+        var x= document.getElementById("mtime").options[3].disabled = true;
+        var x=document.getElementById("mtime").options[1].disabled = true;
+        var x=document.getElementById("mtime").options[2].disabled = true;
+    }
+    else if (currentTime > '12:00')
+    {
+        var x= document.getElementById("mtime").options[2].disabled = true;
+        var x=document.getElementById("mtime").options[1].disabled = true;
+    }
+    else if (currentTime > '09:00')
+    {
+       var x=document.getElementById("mtime").options[1].disabled = true;
+    }
+}
+}
+
+
+
+
+
+
+  </script>
 {% endblock %}

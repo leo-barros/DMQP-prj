@@ -5,10 +5,13 @@
 {% endblock %}
 
 {% block main %}
-      
-            
-            {% for movie in query %}
+            <ul class="showcase-movies">
+                <h2>Select a movie:</h2><br>
+                {% for movie in query %}
             <li><a href="/book/{{movie[0]}}"> {{movie[4]}} </a> </li>
             {% endfor %}
+            </ul>
+            
+            
 
 {% endblock %}

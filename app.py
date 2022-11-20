@@ -79,10 +79,11 @@ def book(movieid):
     else:
         mtime= request.form.get("mtime")
         mdate= request.form.get("mdate")
-        return redirect("/bookseats/{}/{}/{}".format(movieid,mdate,mtime))
+        quantity=request.form.get("quantity")
+        return redirect("/bookseats/{}/{}/{}/{}".format(movieid,mdate,mtime,quantity))
 
-@app.route("/bookseats/<movieid>/<date>/<showtime>", methods=["GET", "POST"])
-def bookseats(movieid,date,showtime):
+@app.route("/bookseats/<movieid>/<date>/<showtime>/<quantity>", methods=["GET", "POST"])
+def bookseats(movieid,date,showtime,quantity):
     if request.method == "GET":
         cursor = mysql.connection.cursor()
         cursor.execute('''SELECT screen_no FROM movie WHERE mid=%s''',movieid)
@@ -102,21 +103,21 @@ def bookseats(movieid,date,showtime):
         if len(available_seats) == 0:
             return render_template("error.html")
         else:
-            return render_template("bookseats.html",available_seats=available_seats,movieid=movieid,date=date,showtime=showtime)
+            return render_template("bookseats.html",available_seats=available_seats,movieid=movieid,date=date,showtime=showtime,quantity=quantity)
     else:
-        seatno=request.form.get("seatno")
+        seatno=request.form.getlist('seatno')
+        return redirect("/transaction/{}/{}/{}/{}/{}".format(movieid,date,showtime,quantity,seatno))
 
-        return redirect("/transaction/{}/{}/{}/{}".format(movieid,date,showtime,seatno))
-
-@app.route("/transaction/<movieid>/<date>/<showtime>/<seatno>", methods=["GET", "POST"])
-def transact(movieid,date,showtime,seatno):
+@app.route("/transaction/<movieid>/<date>/<showtime>/<quantity>/<seatno>", methods=["GET", "POST"])
+def transact(movieid,date,showtime,quantity,seatno):
     if request.method == "GET":
-        return render_template("transaction.html",movieid=movieid,date=date,showtime=showtime,seatno=seatno)
+        amount=int(int(quantity)*200)
+        return render_template("transaction.html",movieid=movieid,date=date,showtime=showtime,quantity=quantity,seatno=seatno,transaction_amount=amount)
     else:
         cust_ph=request.form.get("cust_ph")
         mode_of_pay= request.form.get("mode_of_pay")
         transaction_id=str(uuid.uuid4())[:8]
-        noOfTickets=1
+        noOfTickets=quantity
         price=200
         now = datetime.now()
         formatted_date = now.strftime('%Y-%m-%d')
@@ -124,17 +125,24 @@ def transact(movieid,date,showtime,seatno):
         cursor = mysql.connection.cursor()
         cursor.execute(''' INSERT INTO transaction (trid,no_of_tickets,mode_of_pay,price,tdate,cust_phone,time) VALUES(%s,%s,%s,%s,%s,%s,%s)''',(transaction_id,noOfTickets,mode_of_pay,price,formatted_date,cust_ph,formatted_time))
         mysql.connection.commit()
-        cursor.execute(''' INSERT INTO ticket (movie_id,seat_no,mtime,mdate,tid) VALUES(%s,%s,%s,%s,%s)''',(movieid,seatno,showtime,date,transaction_id))
-        mysql.connection.commit()
+        seatno=seatno.replace("%20","")
+        seatno=seatno.replace("'","")
+        seatno=seatno.replace("[","")
+        seatno=seatno.replace("]","")
+        seatno=seatno.split(",")
+        for seat in seatno:
+            cursor.execute(''' INSERT INTO ticket (movie_id,seat_no,mtime,mdate,tid) VALUES(%s,%s,%s,%s,%s)''',(movieid,seat,showtime,date,transaction_id))
+            mysql.connection.commit()
         cursor.execute(''' SELECT * FROM ticket WHERE tid=%s''',[transaction_id])
-        booked_ticket=cursor.fetchone()
+        booked_tickets=cursor.fetchall()
         cursor.execute(''' SELECT title,screen_no FROM movie WHERE mid=%s''',[movieid])
         movie_details=cursor.fetchone()
         movie_title=movie_details[0]
         movie_screen=movie_details[1]
         cursor.close()
         flash('Tickets booked successfully!')
-        return render_template("generatedtickets.html",ticket=booked_ticket,movie_title=movie_title,movie_screen=movie_screen)
+        return render_template("generatedtickets.html",tickets=booked_tickets,movie_title=movie_title,movie_screen=movie_screen)
+
 
 @app.route("/addscreen", methods=["GET", "POST"])
 def addscreen():

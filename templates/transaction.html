@@ -5,15 +5,16 @@
 {% endblock %}
 
 {% block main %}
-<form class="" action="/transaction/{{movieid}}/{{date}}/{{showtime}}/{{seatno}}" method="post">
-    <select name="mode_of_pay" placeholder="mode_of_pay" value="">
+<h2>Transaction amount is ₹ {{transaction_amount}}</h2>
+<form class="" action="/transaction/{{movieid}}/{{date}}/{{showtime}}/{{quantity}}/{{seatno}}" method="post">
+    <select name="mode_of_pay" placeholder="mode_of_pay" value="" required>
       <option value="cash">cash</option>
       <option value="gpay">gpay</option>
       <option value="credit card">credit card</option>
       <option value="debit card">debit card</option>
     </select> <br>
     <!-- <input type="text" name="mode_of_pay" placeholder="mode_of_pay" value=""> <br> -->
-    <input placeholder="Phone number" type="number" name="cust_ph">
+    <input placeholder="Phone number" type="number" name="cust_ph" required>
     <button type="submit" name="submit"> Done</button>
   </form>
 {% endblock %}

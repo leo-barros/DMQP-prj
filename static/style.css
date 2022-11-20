@@ -1,14 +1,125 @@
 form{
-    width: 50%;
+    width: min-content;
     margin: auto;
-    padding-top: 5rem;
-    padding: 10rem;
+    margin-top: 5rem;
+    padding: 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: aliceblue;
+    border-radius: 1rem;
 }
 
+input 
+{
+    width: 100%;
+    margin: auto;
+    width: 20rem;
+    margin-bottom: 1rem;
+    border-radius: 0.4rem;
+    padding: 1rem;
+
+}
+select{
+    margin: auto;
+    width: 20rem;
+    margin-bottom: 1rem;
+    border-radius: 0.4rem;
+    padding: 1rem;
+}
+.showcase-movies
+{
+    width: 50%;
+    margin: auto;
+    margin-top: 5rem;
+    padding: 5rem;
+    padding-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: aliceblue;
+    border-radius: 1rem;
+}
+button,input[type=submit]
+{
+    background-color: rgb(23, 119, 245);
+    color: white;
+    border: 1rem transparent;
+    border-radius: 1.2rem;
+    padding: 0.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin: auto;
+}
 .ticket
 {
     background-color: rgb(253, 230, 22);
     margin: auto;
     width: 40%;
+
+}
+
+.data-container
+{
+    width: 50%;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    color: white;
+
+}
+.data-box{
+
+    width: 12rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0.6rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 1rem;
+    margin: 1rem;
+}
+.data-box:nth-child(1)
+{
+    background: #FF8008;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #FFC837, #FF8008);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #FFC837, #FF8008); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+.data-box:nth-child(2)
+{
+    background: #1D976C;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #93F9B9, #1D976C);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #93F9B9, #1D976C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+.data-box:nth-child(3)
+{
+    background: #EB3349;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #F45C43, #EB3349);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #F45C43, #EB3349); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    
+}
+.data-box:nth-child(4)
+{
+    background: #4CB8C4;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #3CD3AD, #4CB8C4);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #3CD3AD, #4CB8C4); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+.data-box:nth-child(5)
+{
+    background: #DA22FF;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #9733EE, #DA22FF);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #9733EE, #DA22FF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+.data-box:nth-child(6)
+{
+    background: #1A2980;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #26D0CE, #1A2980);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #26D0CE, #1A2980); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     
 }

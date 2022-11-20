@@ -1,18 +1,39 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Book tickets
+    Book seats
 {% endblock %}
 
 {% block main %}
-<form class="" action="/bookseats/{{movieid}}/{{date}}/{{showtime}}" method="post">
+
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.5.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var arr = new Array();
+        $("select[multiple]").change(function() {
+            $(this).find("option:selected")
+            if ($(this).find("option:selected").length > "{{quantity}}" ) {
+                $(this).find("option").removeAttr("selected");
+                $(this).val(arr);
+            }
+            else {
+                arr = new Array();
+                $(this).find("option:selected").each(function(index, item) {
+                    arr.push($(item).val());
+                });
+            }
+        });
+    });
+</script>
+<form action="/bookseats/{{movieid}}/{{date}}/{{showtime}}/{{quantity}}" method="post">
     <h3>Select seat no.</h3>
-    <select name="seatno" id="">
+    <select required multiple type="radio" class="select-seats" name="seatno" id="">
         {% for seat in available_seats %}
         <option value="{{seat}}">{{seat}}</option>
         {% endfor %}
-    </select>
-    <input type="submit">
+    </select><br>
+    <input type="submit" placeholder="Go for transaction">
 </form>
 
 
