@@ -123,3 +123,43 @@ background: linear-gradient(to right, #9733EE, #DA22FF); /* W3C, IE 10+/ Edge, F
     background: linear-gradient(to right, #26D0CE, #1A2980); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     
 }
+
+.error-box{
+    position: absolute;
+    left: 25%;
+    top: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    width: 50%;
+    height: 10rem;
+    margin: auto;
+    background-color: #f7445973;
+    border: 2px solid rgb(216, 7, 7);
+    border-radius: 1rem;
+    color: #350000;
+    font-size: 1.5rem;
+}
+.error-box h2
+{
+    text-align: center;
+    color: #350000;
+    width: 100%;
+    font-size: 3rem;
+}
+.infobox
+{
+    width: 50%;
+    margin: auto;
+    margin-top: 5rem;
+    padding: 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: aliceblue;
+    border-radius: 1rem;
+    font-size: 1.4rem;
+
+}

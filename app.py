@@ -39,12 +39,28 @@ def index():
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
     if request.method == "GET":
+        
         return render_template("login.html")
     else:
         username= request.form.get("username")
         password= request.form.get("password")
         if username== "leo" and password=="leo":
-            return render_template("adminpanel.html")
+            cursor = mysql.connection.cursor()
+            cursor.execute('''SELECT count(mid) FROM movie''')
+            movies=cursor.fetchone()[0]
+            cursor.execute('''SELECT count(phone) FROM customer''')
+            customers=cursor.fetchone()[0]
+            cursor.execute('''SELECT count(scr_no) FROM screen''')
+            screens=cursor.fetchone()[0]
+            cursor.execute('''SELECT count(tic_id) FROM ticket''')
+            tickets=cursor.fetchone()[0]
+            cursor.execute('''SELECT count(empid) FROM employee''')
+            emps=cursor.fetchone()[0]
+            cursor.execute('''SELECT count(Dnumber) FROM department''')
+            deps=cursor.fetchone()[0]
+            cursor.execute('''SELECT count(trid) FROM transaction''')
+            trans=cursor.fetchone()[0]
+            return render_template("adminpanel.html",movies=movies,customers=customers,tickets=tickets,emps=emps,deps=deps,trans=trans,screens=screens)
         else:
             return f"Error"
 
@@ -52,7 +68,7 @@ def admin():
 def addmovie():
     if request.method == "GET":
         cursor = mysql.connection.cursor()
-        cursor.execute('''SELECT scr_no FROM screen''')
+        cursor.execute('''SELECT scr_no FROM screen ''')
         screens=cursor.fetchall()
         return render_template("addmovie.html",screens=screens)
     else:
@@ -216,3 +232,28 @@ def addmaintains():
         cursor.close()
         flash('maintains relation has been added successfully!')
         return redirect("/")
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "GET":
+        return render_template("signup.html")
+    else:
+        fname= request.form.get("fname")
+        lname= request.form.get("lname")
+        bdate=request.form.get("bdate")
+        gender=request.form.get("gender")
+        phone=request.form.get("cust_ph")
+        cursor = mysql.connection.cursor()
+        cursor.execute('''SELECT * FROM customer WHERE phone=%s''',[phone])
+        response=cursor.fetchone()
+        if response:
+            return render_template("error.html",error="User with the same phone no. already exists")
+            cursor.close()
+        else:
+            cursor.execute(''' INSERT INTO customer (phone,gender,fname,lname,bdate) VALUES(%s,%s,%s,%s,%s)''',(phone,gender,fname,lname,bdate))
+            mysql.connection.commit()
+            cursor.close()
+            flash('User registration successful!')
+            return redirect("/")
+        
+        

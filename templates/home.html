@@ -5,13 +5,17 @@
 {% endblock %}
 
 {% block main %}
+            <div class="infobox">
+                In order to book tickets you must first signup<br>
+                <a  class="blue-button" href="/signup">Sign up</a>
+            </div>
             <ul class="showcase-movies">
                 <h2>Select a movie:</h2><br>
                 {% for movie in query %}
             <li><a href="/book/{{movie[0]}}"> {{movie[4]}} </a> </li>
             {% endfor %}
             </ul>
-            
+
             
 
 {% endblock %}

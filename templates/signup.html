@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Signup
+{% endblock %}
+
+{% block main %}
+<form action="/signup" method="post">
+
+    <input type="text" placeholder="First Name" name="fname" required><br>
+    <input type="text" placeholder="Last name" name="lname" required><br>
+    <input placeholder="Phone number" type="number" name="cust_ph" required><br>
+    <input type="date"  max="2012-01-01" name="bdate"><br>
+    Gender: 
+    <select name="gender" id="">
+      <option value="m">Male</option>
+      <option value="f">Male</option>
+    </select><br>
+    <input type="submit" placeholder="Register">
+
+</form>
+
+{% endblock %}
