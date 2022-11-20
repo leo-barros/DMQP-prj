@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add movie
+{% endblock %}
+
+{% block main %}
+<form class="" action="/addmovie" method="post">
+    Screen no:<select name="screen_no">
+       
+    {% for screen in screens %}
+    <option value="{{screen[0]}}"> Screen {{screen[0]}} </option>
+    {% endfor %}
+    </select>
+    <br>
+      <!-- <input type="number" name="screen_no" placeholder="screen_no" value="" > <br> -->
+      <input type="number" name="duration_mins" placeholder="duration_mins" value="" > <br>
+      <input type="number" name="rating" placeholder="rating" value="" > <br>
+      <input type="text" name="title" placeholder="title" value=""> <br>
+      <input type="text" name="language" placeholder="language" value=""> <br>
+      <button type="submit" name="submit">Add movie </button>
+    </form>
+{% endblock %}

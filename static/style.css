@@ -1,0 +1,14 @@
+form{
+    width: 50%;
+    margin: auto;
+    padding-top: 5rem;
+    padding: 10rem;
+}
+
+.ticket
+{
+    background-color: rgb(253, 230, 22);
+    margin: auto;
+    width: 40%;
+    
+}

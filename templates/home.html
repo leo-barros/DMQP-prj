@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+      
+            
+            {% for movie in query %}
+            <li><a href="/book/{{movie[0]}}"> {{movie[4]}} </a> </li>
+            {% endfor %}
+
+{% endblock %}

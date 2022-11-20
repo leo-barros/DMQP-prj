@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Admin panel
+{% endblock %}
+
+{% block main %}
+<h2>{{movieDetails}}</h2>
+<form class="" action="/book/{{movieDetails[0]}}" method="post">
+    <!-- <input type="number" name="tic_id" placeholder="empid" tic_id="" > <br> -->
+    <!-- <input type="number" name="screen_no" placeholder="screen_no" value="" > <br> -->
+    <!-- <input type="number" name="movie_id" placeholder="movie_id" value="" > <br> -->
+    <input type="date" name="mdate" placeholder="mdate" value=""> <br>
+    <select name="mtime" id="">
+        <option value="9:00am"> 9:00am</option>
+        <option value="12:00pm">12:00pm</option>
+        <option value="5:00pm">5:00pm</option>
+        <option value="8:00pm">8:00pm</option>
+    </select>
+
+    <button type="submit" name="submit">Book</button>
+   
+  </form>
+{% endblock %}

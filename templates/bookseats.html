@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Book tickets
+{% endblock %}
+
+{% block main %}
+<form class="" action="/bookseats/{{movieid}}/{{date}}/{{showtime}}" method="post">
+    <h3>Select seat no.</h3>
+    <select name="seatno" id="">
+        {% for seat in available_seats %}
+        <option value="{{seat}}">{{seat}}</option>
+        {% endfor %}
+    </select>
+    <input type="submit">
+</form>
+
+
+  
+{% endblock %}

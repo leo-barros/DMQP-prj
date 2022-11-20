@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Transaction
+{% endblock %}
+
+{% block main %}
+<form class="" action="/transaction/{{movieid}}/{{date}}/{{showtime}}/{{seatno}}" method="post">
+    <select name="mode_of_pay" placeholder="mode_of_pay" value="">
+      <option value="cash">cash</option>
+      <option value="gpay">gpay</option>
+      <option value="credit card">credit card</option>
+      <option value="debit card">debit card</option>
+    </select> <br>
+    <!-- <input type="text" name="mode_of_pay" placeholder="mode_of_pay" value=""> <br> -->
+    <input placeholder="Phone number" type="number" name="cust_ph">
+    <button type="submit" name="submit"> Done</button>
+  </form>
+{% endblock %}
