@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add movie
+{% endblock %}
+
+{% block main %}
+<form class="" action="/addemp" method="post">
+    <br>
+    <input type="radio" name="gender" placeholder="" value="m"> male
+    <input type="radio" name="gender" placeholder="" value="f"> female
+    <input type="radio" name="gender" placeholder="" value="o"> other<br>
+    <input type="text" name="fname" placeholder="firstname" value=""> <br>
+    <input type="text" name="lname" placeholder="lastname" value=""> <br>
+    <input type="text" name="street" placeholder="street" value=""> <br>
+    <input type="text" name="state" placeholder="state" value=""> <br>
+    <input type="text" name="city" placeholder="city" value=""> <br>
+    <input type="number" name="salary" placeholder="salary" value="" > <br>
+    Department:<select name="dno">
+        {% for department in departments %}
+        <option value="{{department[0]}}"> {{department[1]}} </option>
+        {% endfor %}
+        </select>
+      <button type="submit" name="submit">Add employee </button>
+    </form>
+{% endblock %}

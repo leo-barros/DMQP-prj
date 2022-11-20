@@ -136,3 +136,75 @@ def transact(movieid,date,showtime,seatno):
         flash('Tickets booked successfully!')
         return render_template("generatedtickets.html",ticket=booked_ticket,movie_title=movie_title,movie_screen=movie_screen)
 
+@app.route("/addscreen", methods=["GET", "POST"])
+def addscreen():
+    if request.method == "GET":
+        return render_template("addscreen.html")
+    else:
+        floor= request.form.get("floor")
+        scr_no= request.form.get("scr_no")
+        dimension= request.form.get("dimension")
+        capacity= request.form.get("capacity")
+        cursor = mysql.connection.cursor()
+        cursor.execute(''' INSERT INTO screen (floor,scr_no,dimension,capacity) VALUES(%s,%s,%s,%s)''',(floor,scr_no,dimension,capacity))
+        mysql.connection.commit()
+        cursor.close()
+        flash('Screen has been added successfully!')
+        return redirect("/")
+
+@app.route("/adddept", methods=["GET", "POST"])
+def adddept():
+    if request.method == "GET":
+        return render_template("adddept.html")
+    else:
+        type= request.form.get("type")
+        cursor = mysql.connection.cursor()
+        cursor.execute(''' INSERT INTO department (Dnumber,type) VALUES(%s,%s)''',(0,type))
+        mysql.connection.commit()
+        cursor.close()
+        flash('Department has been added successfully!')
+        return redirect("/")
+
+@app.route("/addemp", methods=["GET", "POST"])
+def addemp():
+    if request.method == "GET":
+        cursor = mysql.connection.cursor()
+        cursor.execute('''SELECT type FROM department''')
+        departments=cursor.fetchall()
+        return render_template("addemp.html",departments=departments)
+    else:
+        gender= request.form.get("gender")
+        fname= request.form.get("fname")
+        lname= request.form.get("lname")
+        street= request.form.get("street")
+        state= request.form.get("state")
+        city= request.form.get("city")
+        salary= request.form.get("salary")
+        dno= request.form.get("dno")
+        cursor = mysql.connection.cursor()
+        cursor.execute(''' INSERT INTO employee (gender,fname,lname,street,state,city,salary) VALUES(%s,%s,%s,%s,%s,%s,%s)''',(gender,fname,lname,street,state,city,salary))
+        mysql.connection.commit()
+        cursor.close()
+        flash('employee has been added successfully!')
+        return redirect("/")
+
+@app.route("/addmaintains", methods=["GET", "POST"])
+def addmaintains():
+    if request.method == "GET":
+        cursor = mysql.connection.cursor()
+        cursor.execute('''SELECT scr_no FROM screen''')
+        screens=cursor.fetchall()
+        cursor = mysql.connection.cursor()
+        cursor.execute('''SELECT type FROM department''')
+        departments=cursor.fetchall()
+        return render_template("addmaintains.html",screens=screens,departments=departments)
+    else:
+        dno= request.form.get("dno")
+        screen_no= request.form.get("screen_no")
+        
+        cursor = mysql.connection.cursor()
+        cursor.execute(''' INSERT INTO maintains (dno,screen_no) VALUES(%s,%s)''',(dno,screen_no))
+        mysql.connection.commit()
+        cursor.close()
+        flash('maintains relation has been added successfully!')
+        return redirect("/")
