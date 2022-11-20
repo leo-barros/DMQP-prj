@@ -7,7 +7,7 @@
 {% block main %}
 <form class="" action="/addmaintains" method="post">
     <br>
-    Screen no:<select name="screen_no">
+    Screen no:<select name="scr_no">
         {% for screen in screens %}
         <option value="{{screen[0]}}"> Screen {{screen[0]}} </option>
         {% endfor %}
