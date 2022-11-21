@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Listing
+{% endblock %}
+
+{% block main %}
+
+                <link href="https://fonts.googleapis.com/css?family=Courgette" rel="stylesheet">
+                <script src="https://use.fontawesome.com/dbb72ac4f9.js"></script>
+                <link href="/static/social.css" rel="stylesheet">
+                <link href="/static/style1.css" rel="stylesheet">
+                <link href="/static/listing.css" rel="stylesheet">
+                <h1 class="liname align-center">{{ query[0]["liname"] }} </h1>
+                <br>
+                <div class="menu-box">
+                    <div class="title2 align-center" style="color:black; text-shadow: 2px 2px 4px #000000;"><div class="menu-title">Menu</div></div>
+                    <div class="menu-text">
+                        {{query[0]["menu"]}}
+                    </div>
+                </div>
+                <br><br>
+                <div class="intro">
+                    <img src="/static/images/chefhat.PNG" width="10%" height="10%" style="top:20%;" >
+                    <div class="name-text">Chef: {{query[0]["fname"]}} {{query[0]["lname"]}}</div><br>
+                    <div class="sub-text">Locality: {{query[0]["location"]}} </div><br>
+                    <div class="sub-text">Phone: {{query[0]["whatsapp"]}}</div><br>
+                    <div class="sub-text">E-mail: {{query[0]["username"]}}</div><br>
+                    {% if query[0]["insta"] %}
+                    <div class="sub-text">Instagram: @{{query[0]["insta"]}} </div><br><br>
+                    {% endif %}
+                    </div>
+                <br><br>
+                <div class="s-foot">
+                    <ul class="ul1">
+                        {% if query[0]["insta"] %}
+                	<li><a href="https://www.instagram.com/{{query[0]["insta"]}}"><i class="fa fa-instagram" style="font-size: 0.73em;" aria-hidden="true"> </i></a></li>
+                    {% else %}
+                    <li><a href="https://www.instagram.com/qc_goa/"><i class="fa fa-instagram" style="font-size: 0.73em;" aria-hidden="true"> </i></a></li>
+                    {% endif %}
+                	<li><a href="https://api.whatsapp.com/send/?phone=91{{query[0]["whatsapp"]}}&text&app_absent=0"><i class="fa fa-whatsapp" style="font-size: 0.73em;" aria-hidden="true"></i></a></li>
+                	<li><a href="tel:{{query[0]["whatsapp"]}}"><i class="fa fa-phone" style="font-size: 0.73em;" aria-hidden="true"></i></a></li>
+                </ul>
+                </div>
+
+{% endblock %}

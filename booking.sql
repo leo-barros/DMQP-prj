@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 21, 2022 at 05:44 PM
--- Server version: 10.4.25-MariaDB
--- PHP Version: 7.4.30
+-- Generation Time: Nov 21, 2022 at 08:32 PM
+-- Server version: 10.4.24-MariaDB
+-- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -44,6 +44,29 @@ INSERT INTO `admins` (`id`, `username`, `hash`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `collectionperday`
+-- (See below for the actual view)
+--
+CREATE TABLE `collectionperday` (
+`date` date
+,`income per day` bigint(24)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `collectionpermovie`
+-- (See below for the actual view)
+--
+CREATE TABLE `collectionpermovie` (
+`movie_id` int(11)
+,`title` longtext
+,`income per movie` bigint(24)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `customer`
 --
 
@@ -61,6 +84,7 @@ CREATE TABLE `customer` (
 --
 
 INSERT INTO `customer` (`phone`, `gender`, `fname`, `lname`, `bdate`, `age`) VALUES
+(1234567890, 'm', 'varad', 'kelkar', '2002-07-07', 20),
 (9096652976, 'm', 'vaughan', 'dsouza', '2002-09-27', 20),
 (9421281860, 'm', 'Duane', 'Rodrigues', '2012-01-01', 10),
 (9423884797, 'm', 'Leo', 'Barros', '2001-09-25', 21);
@@ -80,6 +104,36 @@ CREATE TRIGGER `bdate_update` BEFORE UPDATE ON `customer` FOR EACH ROW BEGIN
   END
 $$
 DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `before_customer_insert` AFTER INSERT ON `customer` FOR EACH ROW INSERT INTO customer_audit
+ SET id=new.phone,
+    fname=new.fname,
+    lname=new.lname,
+    `registered`=CURRENT_DATE(),
+    `reg_time`=CURTIME()
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customer_audit`
+--
+
+CREATE TABLE `customer_audit` (
+  `id` bigint(20) NOT NULL,
+  `fname` varchar(20) NOT NULL,
+  `lname` varchar(20) NOT NULL,
+  `registered` date NOT NULL,
+  `reg_time` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `customer_audit`
+--
+
+INSERT INTO `customer_audit` (`id`, `fname`, `lname`, `registered`, `reg_time`) VALUES
+(1234567890, 'varad', 'kelkar', '2022-11-21', '23:39:44');
 
 -- --------------------------------------------------------
 
@@ -98,7 +152,22 @@ CREATE TABLE `department` (
 
 INSERT INTO `department` (`Dnumber`, `type`) VALUES
 (1, 'Cleaning'),
+(3, 'Lighting'),
 (2, 'Sound');
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `deptemployee`
+-- (See below for the actual view)
+--
+CREATE TABLE `deptemployee` (
+`Dnumber` int(11)
+,`type` varchar(20)
+,`empid` int(11)
+,`fname` varchar(20)
+,`lname` varchar(20)
+);
 
 -- --------------------------------------------------------
 
@@ -123,7 +192,9 @@ CREATE TABLE `employee` (
 --
 
 INSERT INTO `employee` (`empid`, `gender`, `fname`, `lname`, `street`, `state`, `city`, `salary`, `dno`) VALUES
-(1, 'm', 'Isaiah', 'Dcosta', 'Varca', 'Goa', 'Margao', 10000, 1);
+(1, 'm', 'Isaiah', 'Dcosta', 'Varca', 'Goa', 'Margao', 10000, 1),
+(2, 'm', 'joshua', 'couthino', 'bakers', 'goa', 'manchester', 12000, 2),
+(3, 'm', 'varad', 'kelkar', 'fat', 'goa', 'fartoda', 10000, 2);
 
 -- --------------------------------------------------------
 
@@ -141,7 +212,10 @@ CREATE TABLE `maintains` (
 --
 
 INSERT INTO `maintains` (`Dno`, `scr_no`) VALUES
-(1, 5);
+(1, 1),
+(1, 5),
+(2, 1),
+(2, 5);
 
 -- --------------------------------------------------------
 
@@ -165,8 +239,46 @@ CREATE TABLE `movie` (
 --
 
 INSERT INTO `movie` (`mid`, `screen_no`, `duration_mins`, `rating`, `title`, `language`, `genre`, `description`) VALUES
-(4, 4, 120, '4', 'The Martian', 'English', NULL, NULL),
-(5, 5, 120, '5', 'Black Panther', 'Hindi', NULL, NULL);
+(4, 4, 120, 'UA', 'The Martian', 'English', 'sci-fi', NULL),
+(5, 5, 150, 'R', 'Black Panther', 'Hindi', 'action', NULL),
+(12, 6, 170, 'UA', 'burnt', 'french', 'drama', 'Adam Jones was the chef at a high-class Parisian restaurant owned by his mentor Jean-Luc, until his drug use and temperamental behavior destroyed his career and the restaurant. In the aftermath, Adam went into self-imposed exile in New Orleans by shucking');
+
+--
+-- Triggers `movie`
+--
+DELIMITER $$
+CREATE TRIGGER `before_movie_delete` BEFORE DELETE ON `movie` FOR EACH ROW INSERT INTO movie_history
+ SET id=old.mid,
+ 	title=old.title,
+    `lang`=old.`language`,
+    `genre`=old.`genre`,
+    `deleted`=CURRENT_DATE(),
+    `del_time`=CURTIME()
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `movie_history`
+--
+
+CREATE TABLE `movie_history` (
+  `id` int(11) NOT NULL,
+  `title` varchar(50) NOT NULL,
+  `lang` varchar(10) NOT NULL,
+  `genre` varchar(50) DEFAULT NULL,
+  `deleted` date NOT NULL,
+  `del_time` varchar(10) DEFAULT NULL,
+  `action` varchar(10) NOT NULL DEFAULT 'deleted'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `movie_history`
+--
+
+INSERT INTO `movie_history` (`id`, `title`, `lang`, `genre`, `deleted`, `del_time`, `action`) VALUES
+(13, 'patterson', 'spanish', 'drama', '2022-11-22', '00:20:04', 'deleted');
 
 -- --------------------------------------------------------
 
@@ -188,7 +300,7 @@ CREATE TABLE `screen` (
 INSERT INTO `screen` (`floor`, `scr_no`, `dimension`, `capacity`) VALUES
 (2, 1, '2d', 50),
 (3, 4, '2d', 10),
-(2, 5, '45', 45),
+(2, 5, '3d', 45),
 (3, 6, '2d', 20);
 
 -- --------------------------------------------------------
@@ -229,9 +341,31 @@ INSERT INTO `ticket` (`tic_id`, `movie_id`, `seat_no`, `mtime`, `mdate`, `tid`) 
 (58, 4, 2, '5:00pm', '2022-11-21', 'c8a7be17'),
 (59, 4, 1, '5:00pm', '2022-11-23', '2419c381'),
 (60, 4, 2, '5:00pm', '2022-11-23', '2419c381'),
-(61, 4, 2, '5:00pm', '2022-11-23', '6178abbb'),
 (62, 5, 2, '12:00pm', '2022-11-22', 'bafcc4b1'),
 (63, 5, 3, '12:00pm', '2022-11-22', 'bafcc4b1');
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `ticketspermovie`
+-- (See below for the actual view)
+--
+CREATE TABLE `ticketspermovie` (
+`mid` int(11)
+,`no of tickets` bigint(21)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `top3customer`
+-- (See below for the actual view)
+--
+CREATE TABLE `top3customer` (
+`fname` varchar(20)
+,`lname` varchar(20)
+,`total` decimal(32,0)
+);
 
 -- --------------------------------------------------------
 
@@ -280,6 +414,51 @@ INSERT INTO `transaction` (`trid`, `no_of_tickets`, `mode_of_pay`, `price`, `tda
 ('df6017d4', 2, 'cash', 200, '2022-11-20', 9423884797, '13:47:42'),
 ('f6ee49df', 1, 'cash', 200, '2022-11-20', 9423884797, '10:46:52');
 
+-- --------------------------------------------------------
+
+--
+-- Structure for view `collectionperday`
+--
+DROP TABLE IF EXISTS `collectionperday`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `collectionperday`  AS SELECT `ticket`.`mdate` AS `date`, count(`ticket`.`seat_no`) * 200 AS `income per day` FROM `ticket` GROUP BY `ticket`.`mdate``mdate`  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `collectionpermovie`
+--
+DROP TABLE IF EXISTS `collectionpermovie`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `collectionpermovie`  AS SELECT `ticket`.`movie_id` AS `movie_id`, `movie`.`title` AS `title`, count(`ticket`.`seat_no`) * 200 AS `income per movie` FROM (`ticket` join `movie` on(`ticket`.`movie_id` = `movie`.`mid`)) GROUP BY `ticket`.`movie_id``movie_id`  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `deptemployee`
+--
+DROP TABLE IF EXISTS `deptemployee`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `deptemployee`  AS SELECT `department`.`Dnumber` AS `Dnumber`, `department`.`type` AS `type`, `employee`.`empid` AS `empid`, `employee`.`fname` AS `fname`, `employee`.`lname` AS `lname` FROM (`department` join `employee` on(`department`.`Dnumber` = `employee`.`dno`))  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `ticketspermovie`
+--
+DROP TABLE IF EXISTS `ticketspermovie`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `ticketspermovie`  AS SELECT `movie`.`mid` AS `mid`, count(`ticket`.`seat_no`) AS `no of tickets` FROM (`movie` join `ticket` on(`movie`.`mid` = `ticket`.`movie_id`)) GROUP BY `movie`.`mid``mid`  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `top3customer`
+--
+DROP TABLE IF EXISTS `top3customer`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `top3customer`  AS SELECT `customer`.`fname` AS `fname`, `customer`.`lname` AS `lname`, sum(`transaction`.`price`) AS `total` FROM (`customer` join `transaction` on(`customer`.`phone` = `transaction`.`cust_phone`)) GROUP BY `customer`.`phone` ORDER BY sum(`transaction`.`price`) DESC, `customer`.`fname` ASC LIMIT 0, 33  ;
+
 --
 -- Indexes for dumped tables
 --
@@ -296,6 +475,12 @@ ALTER TABLE `admins`
 --
 ALTER TABLE `customer`
   ADD PRIMARY KEY (`phone`);
+
+--
+-- Indexes for table `customer_audit`
+--
+ALTER TABLE `customer_audit`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `department`
@@ -324,6 +509,12 @@ ALTER TABLE `maintains`
 ALTER TABLE `movie`
   ADD PRIMARY KEY (`mid`),
   ADD KEY `fk_screen_no` (`screen_no`);
+
+--
+-- Indexes for table `movie_history`
+--
+ALTER TABLE `movie_history`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `screen`
@@ -360,19 +551,19 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `department`
 --
 ALTER TABLE `department`
-  MODIFY `Dnumber` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `Dnumber` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `empid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `empid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `movie`
 --
 ALTER TABLE `movie`
-  MODIFY `mid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `mid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `screen`
