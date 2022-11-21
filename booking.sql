@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 21, 2022 at 09:21 AM
--- Server version: 10.4.24-MariaDB
--- PHP Version: 8.1.6
+-- Generation Time: Nov 21, 2022 at 05:44 PM
+-- Server version: 10.4.25-MariaDB
+-- PHP Version: 7.4.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,26 @@ SET time_zone = "+00:00";
 --
 -- Database: `booking`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admins`
+--
+
+CREATE TABLE `admins` (
+  `id` int(4) NOT NULL,
+  `username` varchar(12) NOT NULL,
+  `hash` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `admins`
+--
+
+INSERT INTO `admins` (`id`, `username`, `hash`) VALUES
+(1, 'admin', 'pbkdf2:sha25'),
+(3, 'leo', 'pbkdf2:sha256:260000$FDESZThw$c5bad925ff4cfb4a65f9749dcc047b6b69a51c13a906f33d12500c1f52a6cca5');
 
 -- --------------------------------------------------------
 
@@ -209,7 +229,9 @@ INSERT INTO `ticket` (`tic_id`, `movie_id`, `seat_no`, `mtime`, `mdate`, `tid`) 
 (58, 4, 2, '5:00pm', '2022-11-21', 'c8a7be17'),
 (59, 4, 1, '5:00pm', '2022-11-23', '2419c381'),
 (60, 4, 2, '5:00pm', '2022-11-23', '2419c381'),
-(61, 4, 2, '5:00pm', '2022-11-23', '6178abbb');
+(61, 4, 2, '5:00pm', '2022-11-23', '6178abbb'),
+(62, 5, 2, '12:00pm', '2022-11-22', 'bafcc4b1'),
+(63, 5, 3, '12:00pm', '2022-11-22', 'bafcc4b1');
 
 -- --------------------------------------------------------
 
@@ -251,6 +273,7 @@ INSERT INTO `transaction` (`trid`, `no_of_tickets`, `mode_of_pay`, `price`, `tda
 ('ac6d1039', 2, 'credit card', 200, '2022-11-20', 9423884797, '17:08:42'),
 ('accd7923', 1, 'cash', 200, '2022-11-20', 9423884797, '10:49:57'),
 ('b1f53f04', 1, 'cash', 200, '2022-11-20', 9423884797, '10:57:36'),
+('bafcc4b1', 2, 'debit card', 200, '2022-11-21', 9423884797, '21:11:46'),
 ('c6e8413f', 2, 'cash', 200, '2022-11-20', 9423884797, '13:47:25'),
 ('c8a7be17', 2, 'debit card', 200, '2022-11-21', 9423884797, '12:40:52'),
 ('cae5cc16', 2, 'cash', 200, '2022-11-20', 9423884797, '13:37:05'),
@@ -260,6 +283,13 @@ INSERT INTO `transaction` (`trid`, `no_of_tickets`, `mode_of_pay`, `price`, `tda
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `admins`
+--
+ALTER TABLE `admins`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- Indexes for table `customer`
@@ -321,6 +351,12 @@ ALTER TABLE `transaction`
 --
 
 --
+-- AUTO_INCREMENT for table `admins`
+--
+ALTER TABLE `admins`
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `department`
 --
 ALTER TABLE `department`
@@ -348,7 +384,7 @@ ALTER TABLE `screen`
 -- AUTO_INCREMENT for table `ticket`
 --
 ALTER TABLE `ticket`
-  MODIFY `tic_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `tic_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- Constraints for dumped tables
