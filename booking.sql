@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 20, 2022 at 06:34 PM
--- Server version: 10.4.25-MariaDB
--- PHP Version: 7.4.30
+-- Generation Time: Nov 21, 2022 at 09:21 AM
+-- Server version: 10.4.24-MariaDB
+-- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -77,7 +77,8 @@ CREATE TABLE `department` (
 --
 
 INSERT INTO `department` (`Dnumber`, `type`) VALUES
-(1, 'Cleaning');
+(1, 'Cleaning'),
+(2, 'Sound');
 
 -- --------------------------------------------------------
 
@@ -94,8 +95,15 @@ CREATE TABLE `employee` (
   `state` varchar(20) NOT NULL,
   `city` varchar(20) NOT NULL,
   `salary` bigint(20) NOT NULL,
-  `dno` int(11) NOT NULL
+  `dno` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `employee`
+--
+
+INSERT INTO `employee` (`empid`, `gender`, `fname`, `lname`, `street`, `state`, `city`, `salary`, `dno`) VALUES
+(1, 'm', 'Isaiah', 'Dcosta', 'Varca', 'Goa', 'Margao', 10000, 1);
 
 -- --------------------------------------------------------
 
@@ -196,7 +204,12 @@ INSERT INTO `ticket` (`tic_id`, `movie_id`, `seat_no`, `mtime`, `mdate`, `tid`) 
 (50, 5, 10, '9:00am', '2022-11-25', '01213968'),
 (51, 5, 11, '9:00am', '2022-11-25', '01213968'),
 (55, 5, 13, '9:00am', '2022-11-25', 'ac6d1039'),
-(56, 5, 14, '9:00am', '2022-11-25', 'ac6d1039');
+(56, 5, 14, '9:00am', '2022-11-25', 'ac6d1039'),
+(57, 4, 1, '5:00pm', '2022-11-21', 'c8a7be17'),
+(58, 4, 2, '5:00pm', '2022-11-21', 'c8a7be17'),
+(59, 4, 1, '5:00pm', '2022-11-23', '2419c381'),
+(60, 4, 2, '5:00pm', '2022-11-23', '2419c381'),
+(61, 4, 2, '5:00pm', '2022-11-23', '6178abbb');
 
 -- --------------------------------------------------------
 
@@ -223,6 +236,7 @@ INSERT INTO `transaction` (`trid`, `no_of_tickets`, `mode_of_pay`, `price`, `tda
 ('01213968', 3, 'gpay', 200, '2022-11-20', 9423884797, '13:51:57'),
 ('0689522c', 1, 'cash', 200, '2022-11-20', 9423884797, '11:57:00'),
 ('0a80856c', 1, 'cash', 200, '2022-11-20', 9423884797, '11:03:37'),
+('2419c381', 2, 'gpay', 200, '2022-11-21', 9423884797, '13:05:52'),
 ('39a2a161', 1, 'cash', 200, '2022-11-19', 9423884797, '23:42:13'),
 ('3fa73315', 1, 'cash', 200, '2022-11-20', 9423884797, '11:22:17'),
 ('45e2a585', 1, 'gpay', 200, '2022-11-19', 9423884797, '23:31:21'),
@@ -230,6 +244,7 @@ INSERT INTO `transaction` (`trid`, `no_of_tickets`, `mode_of_pay`, `price`, `tda
 ('554bacc3', 2, 'cash', 200, '2022-11-20', 9423884797, '13:44:53'),
 ('5f8c711d', 1, 'cash', 200, '2022-11-19', 9423884797, '23:33:58'),
 ('6051052c', 2, 'cash', 200, '2022-11-20', 9423884797, '13:51:08'),
+('6178abbb', 2, 'cash', 200, '2022-11-21', 9423884797, '13:06:58'),
 ('7f30ce20', 1, 'cash', 200, '2022-11-20', 9423884797, '10:58:52'),
 ('86cd3197', 1, 'cash', 200, '2022-11-19', 9423884797, '23:41:02'),
 ('9f163e99', 3, 'gpay', 200, '2022-11-20', 9423884797, '13:52:34'),
@@ -237,6 +252,7 @@ INSERT INTO `transaction` (`trid`, `no_of_tickets`, `mode_of_pay`, `price`, `tda
 ('accd7923', 1, 'cash', 200, '2022-11-20', 9423884797, '10:49:57'),
 ('b1f53f04', 1, 'cash', 200, '2022-11-20', 9423884797, '10:57:36'),
 ('c6e8413f', 2, 'cash', 200, '2022-11-20', 9423884797, '13:47:25'),
+('c8a7be17', 2, 'debit card', 200, '2022-11-21', 9423884797, '12:40:52'),
 ('cae5cc16', 2, 'cash', 200, '2022-11-20', 9423884797, '13:37:05'),
 ('df6017d4', 2, 'cash', 200, '2022-11-20', 9423884797, '13:47:42'),
 ('f6ee49df', 1, 'cash', 200, '2022-11-20', 9423884797, '10:46:52');
@@ -255,7 +271,8 @@ ALTER TABLE `customer`
 -- Indexes for table `department`
 --
 ALTER TABLE `department`
-  ADD PRIMARY KEY (`Dnumber`);
+  ADD PRIMARY KEY (`Dnumber`),
+  ADD UNIQUE KEY `uniquetype` (`type`);
 
 --
 -- Indexes for table `employee`
@@ -307,13 +324,13 @@ ALTER TABLE `transaction`
 -- AUTO_INCREMENT for table `department`
 --
 ALTER TABLE `department`
-  MODIFY `Dnumber` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Dnumber` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `empid` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `empid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `movie`
@@ -331,7 +348,7 @@ ALTER TABLE `screen`
 -- AUTO_INCREMENT for table `ticket`
 --
 ALTER TABLE `ticket`
-  MODIFY `tic_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `tic_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- Constraints for dumped tables
@@ -341,7 +358,7 @@ ALTER TABLE `ticket`
 -- Constraints for table `employee`
 --
 ALTER TABLE `employee`
-  ADD CONSTRAINT `fk_dept_no` FOREIGN KEY (`dno`) REFERENCES `department` (`Dnumber`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_dept_no` FOREIGN KEY (`dno`) REFERENCES `department` (`Dnumber`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `maintains`

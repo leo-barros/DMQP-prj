@@ -7,7 +7,48 @@
 {% block main %}
 
 <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.5.js" type="text/javascript"></script>
+<style>
+    form{
+    width: min-content;
+    margin: auto;
+    margin-top: 5rem;
+    padding: 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: aliceblue;
+    border-radius: 1rem;
+}
 
+input 
+{
+    width: 100%;
+    margin: auto;
+    width: 20rem;
+    margin-bottom: 1rem;
+    border-radius: 0.4rem;
+    padding: 1rem;
+
+}
+select{
+    margin: auto;
+    width: 20rem;
+    margin-bottom: 1rem;
+    border-radius: 0.4rem;
+    padding: 1rem;
+}
+button,input[type=submit]
+{
+    background-color: rgb(23, 119, 245);
+    color: white;
+    border: 1rem transparent;
+    border-radius: 1.2rem;
+    padding: 0.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin: auto;
+}
+</style>
 <script type="text/javascript">
     $(document).ready(function() {
         var arr = new Array();

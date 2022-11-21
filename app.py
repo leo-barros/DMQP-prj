@@ -4,8 +4,10 @@ from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime,date
+from flask_session import Session
 from flask_mysqldb import MySQL
 import uuid
+from functools import wraps
 from datetime import datetime
 # Configure application
 app = Flask(__name__)
@@ -17,16 +19,44 @@ app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'booking'
  
 mysql = MySQL(app)
-# # Ensure templates are auto-reloaded
-# app.config["TEMPLATES_AUTO_RELOAD"] = True
-# # Ensure responses aren't cached
-# @app.after_request
-# def after_request(response):
-#     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-#     response.headers["Expires"] = 0
-#     response.headers["Pragma"] = "no-cache"
-#     return response
+# Ensure templates are auto-reloaded
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+# Ensure responses aren't cached
+if app.config["DEBUG"]:
+    @app.after_request
+    def after_request(response):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Expires"] = 0
+        response.headers["Pragma"] = "no-cache"
+        return response
+#Configure session to use filesystem (instead of signed cookies)
 
+# configure session to use filesystem (instead of signed cookies)
+app.config["SESSION_FILE_DIR"] = mkdtemp()
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+app.config["PREFERRED_URL_SCHEME"] = 'https'
+app.config["DEBUG"] = False
+Session(app)
+
+def login_required(f):
+
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get("user_id") is None:
+            return redirect("/login")
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.route("/logout")
+def logout():
+    """Log user out"""
+
+    # Forget any user_id
+    session.clear()
+
+    # Redirect user to login form
+    return redirect("/")
 
 
 @app.route("/")
@@ -36,33 +66,93 @@ def index():
     query=cursor.fetchall()
     return render_template("home.html",query=query)
 
-@app.route("/admin", methods=["GET", "POST"])
-def admin():
-    if request.method == "GET":
-        
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """Log user in"""
+
+    # Forget any user_id
+
+
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+        password=request.form.get("password")
+        username=request.form.get("username")
+        # Query database for username
+        cursor = mysql.connection.cursor()
+        cursor.execute('''SELECT * FROM admins WHERE username=%s''',[username])
+        returned_user=cursor.fetchone()
+        # Ensure username exists and password is correct
+        if not returned_user or not (check_password_hash(returned_user[2], str(password))):
+            return render_template("error.html",error="Invalid username and/or password")
+        # Remember which user has logged in
+        session["user_id"] = returned_user[0]
+        # Redirect user to home page
+        return redirect("/admin")
+
+    else:
         return render_template("login.html")
+
+
+@app.route("/register", methods=["GET", "POST"])
+@login_required
+def register():
+    if request.method == "GET":
+        return render_template("register.html")
     else:
         username= request.form.get("username")
-        password= request.form.get("password")
-        if username== "leo" and password=="leo":
-            cursor = mysql.connection.cursor()
-            cursor.execute('''SELECT count(mid) FROM movie''')
-            movies=cursor.fetchone()[0]
-            cursor.execute('''SELECT count(phone) FROM customer''')
-            customers=cursor.fetchone()[0]
-            cursor.execute('''SELECT count(scr_no) FROM screen''')
-            screens=cursor.fetchone()[0]
-            cursor.execute('''SELECT count(tic_id) FROM ticket''')
-            tickets=cursor.fetchone()[0]
-            cursor.execute('''SELECT count(empid) FROM employee''')
-            emps=cursor.fetchone()[0]
-            cursor.execute('''SELECT count(Dnumber) FROM department''')
-            deps=cursor.fetchone()[0]
-            cursor.execute('''SELECT count(trid) FROM transaction''')
-            trans=cursor.fetchone()[0]
-            return render_template("adminpanel.html",movies=movies,customers=customers,tickets=tickets,emps=emps,deps=deps,trans=trans,screens=screens)
+        password1=request.form.get("password")
+        password2=request.form.get("cpassword")
+        cursor = mysql.connection.cursor()
+        cursor.execute('''SELECT * FROM admins WHERE username=%s''',[username])
+        existing_user=cursor.fetchone()
+        
+
+        if existing_user:
+            return render_template("error.html",error="This username has laready been used for another account. Please use another username.")
+
+
+        elif password1 != password2:
+            return render_template("error.html",error="Passwords do not match")
+
+
         else:
-            return f"Error"
+            hashed_password=generate_password_hash(password2, method='pbkdf2:sha256', salt_length=8)
+            cursor = mysql.connection.cursor()
+            cursor.execute('''INSERT INTO admins (username,hash) VALUES(%s,%s)''',(username,hashed_password))
+            mysql.connection.commit()
+            cursor.execute('''SELECT * FROM admins WHERE username=%s''',[username])
+            returned_user=cursor.fetchone()
+            session["user_id"] = returned_user[0]
+            flash('Registered!')
+            cursor.close()
+            return redirect("/admin")
+
+
+@app.route("/admin")
+@login_required
+def admin():
+    if request.method == "GET":
+        cursor = mysql.connection.cursor()
+        cursor.execute('''SELECT count(mid) FROM movie''')
+        movies=cursor.fetchone()[0]
+        cursor.execute('''SELECT count(phone) FROM customer''')
+        customers=cursor.fetchone()[0]
+        cursor.execute('''SELECT count(scr_no) FROM screen''')
+        screens=cursor.fetchone()[0]
+        cursor.execute('''SELECT count(tic_id) FROM ticket''')
+        tickets=cursor.fetchone()[0]
+        cursor.execute('''SELECT count(empid) FROM employee''')
+        emps=cursor.fetchone()[0]
+        cursor.execute('''SELECT count(Dnumber) FROM department''')
+        deps=cursor.fetchone()[0]
+        cursor.execute('''SELECT count(trid) FROM transaction''')
+        trans=cursor.fetchone()[0]
+        return render_template("adminpanel.html",movies=movies,customers=customers,tickets=tickets,emps=emps,deps=deps,trans=trans,screens=screens)
+
+        
+        
+            
 
 @app.route("/addmovie", methods=["GET", "POST"])
 def addmovie():
@@ -132,32 +222,42 @@ def transact(movieid,date,showtime,quantity,seatno):
     else:
         cust_ph=request.form.get("cust_ph")
         mode_of_pay= request.form.get("mode_of_pay")
-        transaction_id=str(uuid.uuid4())[:8]
-        noOfTickets=quantity
-        price=200
-        now = datetime.now()
-        formatted_date = now.strftime('%Y-%m-%d')
-        formatted_time = now.strftime('%H:%M:%S')
         cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO transaction (trid,no_of_tickets,mode_of_pay,price,tdate,cust_phone,time) VALUES(%s,%s,%s,%s,%s,%s,%s)''',(transaction_id,noOfTickets,mode_of_pay,price,formatted_date,cust_ph,formatted_time))
-        mysql.connection.commit()
-        seatno=seatno.replace("%20","")
-        seatno=seatno.replace("'","")
-        seatno=seatno.replace("[","")
-        seatno=seatno.replace("]","")
-        seatno=seatno.split(",")
-        for seat in seatno:
-            cursor.execute(''' INSERT INTO ticket (movie_id,seat_no,mtime,mdate,tid) VALUES(%s,%s,%s,%s,%s)''',(movieid,seat,showtime,date,transaction_id))
+        cursor.execute('''SELECT * FROM customer WHERE phone=%s''',[cust_ph])
+        response=cursor.fetchone()
+        if response:
+            transaction_id=str(uuid.uuid4())[:8]
+            noOfTickets=quantity
+            price=200
+            now = datetime.now()
+            formatted_date = now.strftime('%Y-%m-%d')
+            formatted_time = now.strftime('%H:%M:%S')
+            cursor = mysql.connection.cursor()
+            cursor.execute(''' INSERT INTO transaction (trid,no_of_tickets,mode_of_pay,price,tdate,cust_phone,time) VALUES(%s,%s,%s,%s,%s,%s,%s)''',(transaction_id,noOfTickets,mode_of_pay,price,formatted_date,cust_ph,formatted_time))
             mysql.connection.commit()
-        cursor.execute(''' SELECT * FROM ticket WHERE tid=%s''',[transaction_id])
-        booked_tickets=cursor.fetchall()
-        cursor.execute(''' SELECT title,screen_no FROM movie WHERE mid=%s''',[movieid])
-        movie_details=cursor.fetchone()
-        movie_title=movie_details[0]
-        movie_screen=movie_details[1]
-        cursor.close()
-        flash('Tickets booked successfully!')
-        return render_template("generatedtickets.html",tickets=booked_tickets,movie_title=movie_title,movie_screen=movie_screen)
+            seatno=seatno.replace("%20","")
+            seatno=seatno.replace("'","")
+            seatno=seatno.replace("[","")
+            seatno=seatno.replace("]","")
+            seatno=seatno.split(",")
+            for seat in seatno:
+                cursor.execute(''' INSERT INTO ticket (movie_id,seat_no,mtime,mdate,tid) VALUES(%s,%s,%s,%s,%s)''',(movieid,seat,showtime,date,transaction_id))
+                mysql.connection.commit()
+            cursor.execute(''' SELECT * FROM ticket WHERE tid=%s''',[transaction_id])
+            booked_tickets=cursor.fetchall()
+            cursor.execute(''' SELECT title,screen_no FROM movie WHERE mid=%s''',[movieid])
+            movie_details=cursor.fetchone()
+            movie_title=movie_details[0]
+            movie_screen=movie_details[1]
+            cursor.close()
+            flash('Tickets booked successfully!')
+            return render_template("generatedtickets.html",tickets=booked_tickets,movie_title=movie_title,movie_screen=movie_screen)
+            
+        else:
+            return render_template("error.html",error="User does not exist. Please sign up before booking")
+            cursor.close()
+            
+        
 
 
 @app.route("/addscreen", methods=["GET", "POST"])
@@ -174,7 +274,7 @@ def addscreen():
         mysql.connection.commit()
         cursor.close()
         flash('Screen has been added successfully!')
-        return redirect("/")
+        return redirect("/admin")
 
 @app.route("/adddept", methods=["GET", "POST"])
 def adddept():
@@ -187,7 +287,7 @@ def adddept():
         mysql.connection.commit()
         cursor.close()
         flash('Department has been added successfully!')
-        return redirect("/")
+        return redirect("/admin")
 
 @app.route("/addemp", methods=["GET", "POST"])
 def addemp():
@@ -210,7 +310,7 @@ def addemp():
         mysql.connection.commit()
         cursor.close()
         flash('employee has been added successfully!')
-        return redirect("/")
+        return redirect("/admin")
 
 @app.route("/addmaintains", methods=["GET", "POST"])
 def addmaintains():
@@ -231,7 +331,7 @@ def addmaintains():
         mysql.connection.commit()
         cursor.close()
         flash('maintains relation has been added successfully!')
-        return redirect("/")
+        return redirect("/admin")
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():

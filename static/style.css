@@ -9,7 +9,9 @@ form{
     background-color: aliceblue;
     border-radius: 1rem;
 }
-
+h1{
+    text-align: center;
+}
 input 
 {
     width: 100%;
@@ -162,4 +164,22 @@ background: linear-gradient(to right, #9733EE, #DA22FF); /* W3C, IE 10+/ Edge, F
     border-radius: 1rem;
     font-size: 1.4rem;
 
+}
+.gender-input
+{
+    width: 10rem;
+}
+.inputgrp
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 0;
+    width: 10rem;
+}
+.inputgrp input
+{
+   
+    margin: auto;
+ 
 }

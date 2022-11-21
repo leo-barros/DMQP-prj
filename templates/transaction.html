@@ -5,8 +5,51 @@
 {% endblock %}
 
 {% block main %}
-<h2>Transaction amount is ₹ {{transaction_amount}}</h2>
+<style>
+  form{
+  width: min-content;
+  margin: auto;
+  margin-top: 5rem;
+  padding: 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: aliceblue;
+  border-radius: 1rem;
+}
+
+input 
+{
+  width: 100%;
+  margin: auto;
+  width: 20rem;
+  margin-bottom: 1rem;
+  border-radius: 0.4rem;
+  padding: 1rem;
+
+}
+select{
+  margin: auto;
+  width: 20rem;
+  margin-bottom: 1rem;
+  border-radius: 0.4rem;
+  padding: 1rem;
+}
+button,input[type=submit]
+{
+  background-color: rgb(23, 119, 245);
+  color: white;
+  border: 1rem transparent;
+  border-radius: 1.2rem;
+  padding: 0.5rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin: auto;
+}
+</style>
+
 <form  action="/transaction/{{movieid}}/{{date}}/{{showtime}}/{{quantity}}/{{seatno}}" method="post">
+  <h2>Transaction amount is ₹ {{transaction_amount}}</h2><br>
     <select name="mode_of_pay" placeholder="mode_of_pay" value="" required>
       <option value="cash">cash</option>
       <option value="gpay">gpay</option>
@@ -14,7 +57,7 @@
       <option value="debit card">debit card</option>
     </select> <br>
     <!-- <input type="text" name="mode_of_pay" placeholder="mode_of_pay" value=""> <br> -->
-    
+    <input placeholder="Phone number" type="number" name="cust_ph" required><br>
     <button type="submit" name="submit"> Done</button>
   </form>
 {% endblock %}
