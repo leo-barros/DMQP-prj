@@ -1,47 +1,186 @@
-{% extends "layout.html" %}
-
+{% extends "adminlayout.html" %}
+{% block style %}
+    <link rel="stylesheet" href="../static/adminpanel.css">
+{% endblock %}
 {% block title %}
     Admin panel
 {% endblock %}
 
 {% block main %}
-           <h1>
-            You're in the admin panel
-           </h1> 
-           <ul class="showcase-movies">
-            <li> <a href="/addmovie"> Add a movie </a></li>
-            <li> <a href="/addscreen"> Add a screen </a></li> 
-            <li> <a href="/adddept"> Add a department </a></li> 
-            <li> <a href="/addemp"> Add an employee </a></li> 
-            <li> <a href="/addmaintains"> Add maintenance </a></li> 
-           </ul>
+<style>
+    .admin-button-container
+    {
+        width: 80%;
+        margin: auto;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin: auto;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+            
+    .admin-button
+    {
+        padding: 2rem;
+        border-radius: 1rem;
+        color: rgb(0, 0, 0);
+        background-color: rgb(255, 255, 255);
+        margin: 1rem;
+        display: flex;
+        flex-direction: row;
+        width: 40%;
+    }
+    .admin-button img{
+        height: 10rem;
+    }
+    .admin-button .content
+    {
+        margin-top: 1rem;
+        margin-left: 1rem;
+    }
+    .admin-button .content a{
+        color: white;
+        padding: 0.5rem;
+        padding-left: 3rem;
+        padding-right: 3rem;
+        background-color: rgb(0, 0, 0);
+        border-radius: 1rem;
+    }
+    .admin-button-container a:hover
+    {
+        background-color: rgb(0, 153, 255);
+    }
+    h1{
+        margin-top: 3rem;
+    }
+    .view{
+        padding: 1rem;
+        width: fit-content;
+        padding-right: 2rem;
+    }
+    .view img
+    {
+        height: 6rem;
+    }
+    .view .content
+    {
+        margin-top: 0;
+    }
+    .view h5
+    {
+        
+        font-size: 2.5rem;
+        color: green;
+    }
+   
+</style>
+<h1>ADMIN PANEL</h1>
+           
            <div class="data-container">
-            <div class="data-box">
+            <a href="/admin/view/customers" class="data-box">
+                <h5>Customers</h5>
+                <h2>{{customers}}</h2>
+            </a>
+            <a href="/admin/view/movies" class="data-box">
                 <h5>Movies</h5>
                 <h2>{{movies}}</h2>
-            </div>
-            <div class="data-box">
+            </a>
+            <a href="/admin/view/screens" class="data-box">
                 <h5>Screens</h5>
                 <h2>{{screens}}</h2>
-            </div>
-            <div class="data-box">
+            </a>
+            <a href="/admin/view/departments" class="data-box">
                 <h5>Departments</h5>
                 <h2>{{deps}}</h2>
-            </div>
-            <div class="data-box">
+            </a>
+            <a href="/admin/view/employees" class="data-box">
                 <h5>Employees</h5>
                 <h2>{{emps}}</h2>
-            </div>
-            <div class="data-box">
+            </a>
+            <a href="/admin/view/tickets" class="data-box">
                 <h5>Booked tickets</h5>
                 <h2>{{tickets}}</h2>
-            </div>
-            <div class="data-box">
+            </a>
+            <a href="/admin/view/transactions" class="data-box">
                 <h5>Transactions</h5>
                 <h2>{{trans}}</h2>
-            </div>
+            </a>
            
            </div>
+
+           <div class="admin-button-container">
+            
+            <div class="admin-button view" > 
+                <img src="../static/images/external-revenue-digital-nomad-flaticons-lineal-color-flat-icons-2.png"/>
+                <div class="content">
+                    <h4>Collection today</h4>
+                    <h5>₹{{todays_collection}}</h5>
+                    
+                </div>
+                
+            </div>
+            <div class="admin-button view" > 
+                <img src="../static/images/two-tickets.png"/>
+                <div class="content">
+                    <h4>Tickets sold today</h4>
+                    <h5>{{todays_tickets}}</h5>
+                    
+                </div>
+                
+            </div>
+        </div>
            <br>
-           <a href="/logout">Logout</a>
+           <h1>DATA ENTRY</h1>
+           <div class="admin-button-container">
+            
+            <div class="admin-button" > 
+                <img src="../static/images/cinema-.png"/>
+                <div class="content">
+                    <h4>Add a movie</h4>
+                    <P>Here you can add a new movie</P>
+                    <br>
+                    <a href="/addmovie">Add </a>
+                </div>
+                
+            </div>
+             <div class="admin-button"> 
+                <img src="../static/images/movie-theater.png"/>
+                <div class="content">
+                    <h4>Add a screen</h4>
+                    <P>Here you can add a new screen</P><br>
+                    <a  href="/addscreen">Add </a>
+                </div>
+                
+             </div>
+             <div class="admin-button" > 
+                <img src="/static/images/external-department-university-flaticons-lineal-color-flat-icons.png"/>
+                <div class="content">
+                    <h4>Add a department</h4>
+                    <P>Here you can add a new department</P><br>
+                    <a href="/adddept">Add </a>
+                </div>
+                
+             </div>
+             <div class="admin-button"> 
+                <img src="../static/images/external-employees-recruitment-agency-flaticons-flat-flat-icons.png"/>
+                <div class="content">
+                    <h4>Add employee</h4>
+                    <P>Here you can add a new employee</P><br>
+                    <a  href="/addemp">Add </a>
+                </div>
+                
+             </div>
+             <div class="admin-button" > 
+                <img src="../static/images/housekeeping.png"/>
+                <div class="content">
+                    <h4>Add maintains</h4>
+                    <P>Here you can assign departments to screens</P><br>
+                    <a href="/addmaintains">Add </a>
+                </div>
+                
+             </div>
+         
+           </div>
+
 {% endblock %}

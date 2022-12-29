@@ -1,26 +1,172 @@
-{% extends "layout.html" %}
+{% extends "adminlayout.html" %}
 
 {% block title %}
     Add movie
 {% endblock %}
 
 {% block main %}
+<style>
+ form
+ {
+  margin-bottom: 4rem;
+ }
+ input{
+    width: 40rem;
+  }
+  textarea
+  {
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+  }
+  select{
+    margin: 0;
+  }
+</style>
 <form class="" action="/addmovie" method="post">
-    Screen no:<select name="screen_no">
-       
-    {% for screen in screens %}
-    <option value="{{screen[0]}}"> Screen {{screen[0]}} </option>
-    {% endfor %}
-    </select>
-    <br>
+    <h2>Add a movie</h2><br>
+    <input type="text" name="title" placeholder="Title" value="" required> <br>
       <!-- <input type="number" name="screen_no" placeholder="screen_no" value="" > <br> -->
-      <input type="number" name="duration_mins" placeholder="duration_mins" value="" > <br>
-      <input type="text" name="rating" placeholder="rating" value="" > <br>
-      <input type="text" name="title" placeholder="title" value=""> <br>
-      <input type="text" name="language" placeholder="language" value=""> <br>
-      <input type="text" name="genre" placeholder="genre" value=""> <br>
-      <input type="text" name="description" placeholder="description" value=""> <br>
+      <input type="number" name="duration_mins" placeholder="Duration_mins" value="" required > <br>
+      Rating
+      <select name="rating" id="" required>
+        <option value="U">U</option>
+        <option value="U/A">U/A</option>
+        <option value="A">A</option>
+      </select><br>
+      <textarea type="text" name="description" placeholder="Description" value="" required></textarea> <br>
+      <input type="text" name="language" placeholder="Language" value="" required>  <br>
+      <input type="text" name="genre" placeholder="Genre" value="" required> <br>
+      <input type="text" name="cast" placeholder="Cast" value="" required> <br>
+      <input type="text" name="trailer_link" placeholder="Trailer Link" value="" required> <br>
+      <input type="date" name="start_date" id="start_date" placeholder="Start Date" onchange="screenoptions();"  required> <br>
+      <input type="date" name="end_date" id="end_date" placeholder="End Date" onchange="endscreenoptions()" required> <br>
+
+      Screen no:
+      <select name="screen_no"  id="screen_no" required>
+  
+        <!-- {% for screen in screens %}
+        <option value="{{screen[0]}}"> Screen {{screen[0]}} </option>
+        {% endfor %} -->
+
+        </select>
+        <br>
 
       <button type="submit" name="submit">Add movie </button>
     </form>
+    <script>
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+    if (dd < 10) {
+      dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+      mm = '0' + mm;
+    } 
+    today = yyyy + '-' + mm + '-' + dd;
+    var datepicker=document.getElementById("start_date").setAttribute("min", today);
+    
+    const screensTuple = {{ screens | tojson | safe }}
+    var screenSelect=document.getElementById('screen_no')  
+        
+    
+    function screenoptions()
+    {
+      var new_start_date= document.getElementById('start_date').value
+      var screenSelect=document.getElementById('screen_no')
+      
+      
+     
+      for(var i=0;i<screensTuple.length;i++)
+      {
+        if( new_start_date > screensTuple[i][2] || new_start_date < screensTuple[i][1])
+        {
+
+          if(notexist(screensTuple[i][0]))
+            screenSelect.options[screenSelect.options.length] = new Option(screensTuple[i][0], screensTuple[i][0]);
+        }
+        else{
+          if(notexist(screensTuple[i][0]) == false)
+          {
+    
+            for(var x=0;x<screenSelect.length;x++)
+            {
+              if(screenSelect[x].value == screensTuple[i][0])
+              {
+                screenSelect.remove(x);
+                
+              }
+            }
+          }
+        }
+        
+    
+    
+      }
+      if (screenSelect.options.length == 0)
+      {
+        alert("There are no available screens for this particular duration. Please change start date")
+      }
+      setMinEndDate()
+    }
+    function setMinEndDate()
+    {
+      var end_date=document.getElementById('end_date').setAttribute("min",document.getElementById('start_date').value);
+    }
+
+    
+    function endscreenoptions()
+    {
+      
+      var new_start_date= document.getElementById('start_date').value
+      var new_end_date= document.getElementById('end_date').value
+      for(var i=0;i<screensTuple.length;i++)
+      {
+        if( new_end_date > screensTuple[i][1] && new_end_date < screensTuple[i][2])
+        {
+         
+          if(notexist(screensTuple[i][0]) == false)
+          {
+            for (var x=0; x<screenSelect.length; x++) {
+                if (screenSelect.options[x].value == screensTuple[i][0])
+                screenSelect.remove(x);
+            }
+                      }
+        }
+        
+    
+    
+      }
+      if (screenSelect.options.length == 0)
+      {
+        alert("There are no available screens for this particular duration. Please change end date")
+      }
+
+    
+    }  
+    function notexist(newOption)
+    {
+      var flag=false;
+      for(var i=0;i<screenSelect.length;i++)
+      {
+        if(screenSelect[i].value == newOption)
+        {
+          flag=true
+          break;
+          
+        }
+      }
+      if(flag)
+      {
+        return false;
+        console.log("Already exists")
+      }
+      else{
+        return true;
+        console.log("not exists")
+      }
+    }
+    </script>
 {% endblock %}

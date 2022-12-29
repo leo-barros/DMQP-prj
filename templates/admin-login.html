@@ -1,0 +1,16 @@
+{% extends "adminlayout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block main %}
+           <form action="/admin-login" method="post">
+            <h2>Admin login</h2><br>
+            Username:
+            <input type="text" placeholder="Username" name="username"><br>
+            Password:
+            <input type="password" placeholder="Password" name="password"><br>
+            <input type="submit">
+           </form> 
+{% endblock %}

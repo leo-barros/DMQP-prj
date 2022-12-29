@@ -1,0 +1,98 @@
+{% extends "adminlayout.html" %}
+{% block style %}
+    <link rel="stylesheet" href="../static/adminview.css">
+{% endblock %}
+{% block title %}
+    Admin View
+{% endblock %}
+
+{% block main %}
+
+<style>
+    body{
+    background-color: #0a0a0a;
+}
+table{
+margin: auto;
+margin-top: 3rem;
+margin-bottom: 3rem;
+width: 95%;
+color: rgb(238, 238, 238);
+background-color: #111111;
+border-radius: 1rem;
+padding: 4rem;
+}
+
+td,th{
+padding: 1rem;
+text-overflow: ellipsis;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+
+}
+tr{
+    max-height: 3rem;
+}
+.search
+{
+    margin: auto;
+    margin-top: 2rem;
+    justify-self: center;
+    width: 30%;
+    background-color: #1a1a1a;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    border: 0.5px solid rgb(35, 240, 255);
+    color: white;
+}
+input{
+    color: white;
+}
+</style>
+<center>
+    <input type="text" id="searchInput" onkeyup="search()" onclick="search()" class="search" placeholder="Search" >
+</center>
+    
+        <table>
+            
+            <tr>
+                {% for column in columns %}
+                    <th>{{column}}</th>
+                {% endfor %} 
+            </tr>
+            {% for tuple in tuples %}
+                    <tr class="tuple">
+                        {% for attribute in tuple %}
+                        
+                            <td>{{attribute}}</td>
+                        {% endfor %}
+                        {% if deletable %}
+                        
+                            <td><a href="/admin/delete/{{name}}/{{tuple[0]}}">Delete</a></td>
+                        {% endif %}
+                        
+                    </tr>
+                {% endfor %}
+        </table>
+ <script>
+    function search() {
+    // Declare variables
+    var input, filter, listing, i, txtValue;
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    listing= document.getElementsByClassName('tuple');
+    // Loop through all 
+    for (i = 0; i < listing.length; i++) {
+      if (listing[i]) {
+        txtValue = listing[i].textContent || listing[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          listing[i].style.display = "";
+        } else {
+          listing[i].style.display = "none";
+        }
+      }
+    }
+  }
+ </script>
+{% endblock %}

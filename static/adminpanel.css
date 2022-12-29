@@ -1,0 +1,19 @@
+a,a:hover
+{
+    text-decoration: none;
+    color: white;
+}
+
+.logout
+
+{
+    font-size: 2rem;
+    margin: auto;
+    padding: 1rem;
+    background-color: rgb(175, 5, 5);
+    color: white;
+    padding: 0.5rem;
+    padding-left: 2rem;
+    padding-right:2rem ;
+    border-radius: 1rem;
+}

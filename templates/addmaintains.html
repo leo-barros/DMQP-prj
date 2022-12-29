@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "adminlayout.html" %}
 
 {% block title %}
     Add movie
@@ -6,6 +6,7 @@
 
 {% block main %}
 <form class="" action="/addmaintains" method="post">
+    <h2>Maintains</h2>
     <br>
     Screen no:<select name="scr_no">
         {% for screen in screens %}
