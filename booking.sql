@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 21, 2022 at 08:32 PM
+-- Generation Time: Nov 25, 2022 at 01:34 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -24,6 +24,18 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `aboveavgseats`
+-- (See below for the actual view)
+--
+CREATE TABLE `aboveavgseats` (
+`floor` int(11)
+,`scr_no` int(11)
+,`capacity` int(11)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `admins`
 --
 
@@ -40,6 +52,17 @@ CREATE TABLE `admins` (
 INSERT INTO `admins` (`id`, `username`, `hash`) VALUES
 (1, 'admin', 'pbkdf2:sha25'),
 (3, 'leo', 'pbkdf2:sha256:260000$FDESZThw$c5bad925ff4cfb4a65f9749dcc047b6b69a51c13a906f33d12500c1f52a6cca5');
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `allnamer`
+-- (See below for the actual view)
+--
+CREATE TABLE `allnamer` (
+`fname` varchar(20)
+,`lname` varchar(20)
+);
 
 -- --------------------------------------------------------
 
@@ -67,6 +90,17 @@ CREATE TABLE `collectionpermovie` (
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `custnemp`
+-- (See below for the actual view)
+--
+CREATE TABLE `custnemp` (
+`fname` varchar(20)
+,`lname` varchar(20)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `customer`
 --
 
@@ -76,18 +110,19 @@ CREATE TABLE `customer` (
   `fname` varchar(20) NOT NULL,
   `lname` varchar(20) NOT NULL,
   `bdate` date NOT NULL,
-  `age` int(11) DEFAULT NULL
+  `age` int(11) DEFAULT NULL,
+  `hashp` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `customer`
 --
 
-INSERT INTO `customer` (`phone`, `gender`, `fname`, `lname`, `bdate`, `age`) VALUES
-(1234567890, 'm', 'varad', 'kelkar', '2002-07-07', 20),
-(9096652976, 'm', 'vaughan', 'dsouza', '2002-09-27', 20),
-(9421281860, 'm', 'Duane', 'Rodrigues', '2012-01-01', 10),
-(9423884797, 'm', 'Leo', 'Barros', '2001-09-25', 21);
+INSERT INTO `customer` (`phone`, `gender`, `fname`, `lname`, `bdate`, `age`, `hashp`) VALUES
+(1234567890, 'm', 'varad', 'kelkar', '2002-07-07', 20, NULL),
+(9096652976, 'm', 'vaughan', 'dsouza', '2002-09-27', 20, NULL),
+(9421281860, 'm', 'Duane', 'Rodrigues', '2012-01-01', 10, NULL),
+(9423884797, 'm', 'Leo', 'Barros', '2001-09-25', 21, NULL);
 
 --
 -- Triggers `customer`
@@ -125,7 +160,7 @@ CREATE TABLE `customer_audit` (
   `fname` varchar(20) NOT NULL,
   `lname` varchar(20) NOT NULL,
   `registered` date NOT NULL,
-  `reg_time` varchar(10) NOT NULL
+  `reg_time` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -133,7 +168,10 @@ CREATE TABLE `customer_audit` (
 --
 
 INSERT INTO `customer_audit` (`id`, `fname`, `lname`, `registered`, `reg_time`) VALUES
-(1234567890, 'varad', 'kelkar', '2022-11-21', '23:39:44');
+(1234567890, 'varad', 'kelkar', '2022-11-22', '22:03:32'),
+(9096652976, 'vaughan', 'dsouza', '2022-11-22', '22:03:32'),
+(9421281860, 'Duane', 'Rodrigues', '2022-11-22', '22:03:32'),
+(9423884797, 'Leo', 'Barros', '2022-11-22', '22:03:32');
 
 -- --------------------------------------------------------
 
@@ -152,8 +190,8 @@ CREATE TABLE `department` (
 
 INSERT INTO `department` (`Dnumber`, `type`) VALUES
 (1, 'Cleaning'),
-(3, 'Lighting'),
-(2, 'Sound');
+(2, 'Sound'),
+(3, 'Lighting');
 
 -- --------------------------------------------------------
 
@@ -172,6 +210,19 @@ CREATE TABLE `deptemployee` (
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `empdept`
+-- (See below for the actual view)
+--
+CREATE TABLE `empdept` (
+`empid` int(11)
+,`fname` varchar(20)
+,`lname` varchar(20)
+,`departmentType` varchar(20)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `employee`
 --
 
@@ -184,17 +235,43 @@ CREATE TABLE `employee` (
   `state` varchar(20) NOT NULL,
   `city` varchar(20) NOT NULL,
   `salary` bigint(20) NOT NULL,
-  `dno` int(11) DEFAULT NULL
+  `dno` int(11) DEFAULT NULL,
+  `adder_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `employee`
 --
 
-INSERT INTO `employee` (`empid`, `gender`, `fname`, `lname`, `street`, `state`, `city`, `salary`, `dno`) VALUES
-(1, 'm', 'Isaiah', 'Dcosta', 'Varca', 'Goa', 'Margao', 10000, 1),
-(2, 'm', 'joshua', 'couthino', 'bakers', 'goa', 'manchester', 12000, 2),
-(3, 'm', 'varad', 'kelkar', 'fat', 'goa', 'fartoda', 10000, 2);
+INSERT INTO `employee` (`empid`, `gender`, `fname`, `lname`, `street`, `state`, `city`, `salary`, `dno`, `adder_id`) VALUES
+(1, 'm', 'Isaiah', 'Dcosta', 'Varca', 'Goa', 'Margao', 10000, 1, 1),
+(2, 'm', 'joshua', 'couthino', 'bakers', 'goa', 'manchester', 12000, 2, 1),
+(3, 'm', 'swizel', ' antao', 'utopia', 'goa', ' varca', 10000, 2, 3),
+(4, 'm', 'sanket', 'shenoy', 'elm', 'goa', 'vat', 12000, 3, 3),
+(5, 'm', 'varad', 'kelkar', 'b13', 'goa', 'fartoda', 12000, 3, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `empnevercustomer`
+-- (See below for the actual view)
+--
+CREATE TABLE `empnevercustomer` (
+`fname` varchar(20)
+,`lname` varchar(20)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `longestmovie`
+-- (See below for the actual view)
+--
+CREATE TABLE `longestmovie` (
+`mid` int(11)
+,`title` longtext
+,`max(``duration_mins``)` int(11)
+);
 
 -- --------------------------------------------------------
 
@@ -220,6 +297,19 @@ INSERT INTO `maintains` (`Dno`, `scr_no`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `minsal`
+-- (See below for the actual view)
+--
+CREATE TABLE `minsal` (
+`empid` int(11)
+,`fname` varchar(20)
+,`lname` varchar(20)
+,`salary` bigint(20)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `movie`
 --
 
@@ -241,7 +331,9 @@ CREATE TABLE `movie` (
 INSERT INTO `movie` (`mid`, `screen_no`, `duration_mins`, `rating`, `title`, `language`, `genre`, `description`) VALUES
 (4, 4, 120, 'UA', 'The Martian', 'English', 'sci-fi', NULL),
 (5, 5, 150, 'R', 'Black Panther', 'Hindi', 'action', NULL),
-(12, 6, 170, 'UA', 'burnt', 'french', 'drama', 'Adam Jones was the chef at a high-class Parisian restaurant owned by his mentor Jean-Luc, until his drug use and temperamental behavior destroyed his career and the restaurant. In the aftermath, Adam went into self-imposed exile in New Orleans by shucking');
+(12, 6, 170, 'UA', 'burnt', 'french', 'drama', 'Adam Jones was the chef at a high-class Parisian restaurant owned by his mentor Jean-Luc, until his drug use and temperamental behavior destroyed his career and the restaurant. In the aftermath, Adam went into self-imposed exile in New Orleans by shucking'),
+(13, 1, 165, 'PG-13', 'modern family', 'english', 'comedy', NULL),
+(14, 4, 180, 'UA', 'sunrise', 'portuguese', 'romance', NULL);
 
 --
 -- Triggers `movie`
@@ -249,13 +341,40 @@ INSERT INTO `movie` (`mid`, `screen_no`, `duration_mins`, `rating`, `title`, `la
 DELIMITER $$
 CREATE TRIGGER `before_movie_delete` BEFORE DELETE ON `movie` FOR EACH ROW INSERT INTO movie_history
  SET id=old.mid,
- 	title=old.title,
-    `lang`=old.`language`,
+     title=old.title,
+    `language`=old.`language`,
     `genre`=old.`genre`,
-    `deleted`=CURRENT_DATE(),
+    `delete`=CURRENT_DATE(),
     `del_time`=CURTIME()
 $$
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `moviemoderateduration`
+-- (See below for the actual view)
+--
+CREATE TABLE `moviemoderateduration` (
+`mid` int(11)
+,`screen_no` int(11)
+,`duration_mins` int(11)
+,`title` longtext
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `movieshowing`
+-- (See below for the actual view)
+--
+CREATE TABLE `movieshowing` (
+`movie_id` int(11)
+,`datetime` varchar(21)
+,`title` longtext
+,`duration_mins` int(11)
+,`screen_no` int(11)
+);
 
 -- --------------------------------------------------------
 
@@ -283,6 +402,33 @@ INSERT INTO `movie_history` (`id`, `title`, `lang`, `genre`, `deleted`, `del_tim
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `nooftickets`
+-- (See below for the actual view)
+--
+CREATE TABLE `nooftickets` (
+`trid` varchar(11)
+,`no_of_tickets` bigint(21)
+,`mode_of_pay` varchar(20)
+,`price` int(11)
+,`tdate` date
+,`cust_phone` bigint(20)
+,`time` time
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `sceenmovie`
+-- (See below for the actual view)
+--
+CREATE TABLE `sceenmovie` (
+`scr_no` int(11)
+,`movieTitle` longtext
+);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `screen`
 --
 
@@ -299,6 +445,7 @@ CREATE TABLE `screen` (
 
 INSERT INTO `screen` (`floor`, `scr_no`, `dimension`, `capacity`) VALUES
 (2, 1, '2d', 50),
+(2, 2, '3D', 30),
 (3, 4, '2d', 10),
 (2, 5, '3d', 45),
 (3, 6, '2d', 20);
@@ -311,8 +458,8 @@ INSERT INTO `screen` (`floor`, `scr_no`, `dimension`, `capacity`) VALUES
 
 CREATE TABLE `ticket` (
   `tic_id` int(11) NOT NULL,
-  `movie_id` int(11) NOT NULL,
   `seat_no` int(11) NOT NULL,
+  `movie_id` int(11) NOT NULL,
   `mtime` varchar(10) NOT NULL,
   `mdate` date NOT NULL,
   `tid` varchar(11) NOT NULL
@@ -322,27 +469,27 @@ CREATE TABLE `ticket` (
 -- Dumping data for table `ticket`
 --
 
-INSERT INTO `ticket` (`tic_id`, `movie_id`, `seat_no`, `mtime`, `mdate`, `tid`) VALUES
-(5, 5, 2, '9:00am', '2022-11-25', '45e2a585'),
-(7, 5, 3, '9:00am', '2022-11-25', '86cd3197'),
-(9, 5, 1, '9:00am', '2022-11-25', 'f6ee49df'),
+INSERT INTO `ticket` (`tic_id`, `seat_no`, `movie_id`, `mtime`, `mdate`, `tid`) VALUES
+(5, 2, 5, '9:00am', '2022-11-25', '45e2a585'),
+(7, 3, 5, '9:00am', '2022-11-25', '86cd3197'),
+(9, 1, 5, '9:00am', '2022-11-25', 'f6ee49df'),
 (10, 5, 5, '9:00am', '2022-11-25', 'accd7923'),
-(14, 5, 37, '9:00am', '2022-11-25', '3fa73315'),
-(39, 5, 4, '9:00am', '2022-11-25', 'cae5cc16'),
-(44, 5, 6, '9:00am', '2022-11-25', 'cae5cc16'),
-(47, 5, 7, '9:00am', '2022-11-25', '6051052c'),
-(48, 5, 8, '9:00am', '2022-11-25', '6051052c'),
-(49, 5, 9, '9:00am', '2022-11-25', '01213968'),
-(50, 5, 10, '9:00am', '2022-11-25', '01213968'),
-(51, 5, 11, '9:00am', '2022-11-25', '01213968'),
-(55, 5, 13, '9:00am', '2022-11-25', 'ac6d1039'),
-(56, 5, 14, '9:00am', '2022-11-25', 'ac6d1039'),
-(57, 4, 1, '5:00pm', '2022-11-21', 'c8a7be17'),
-(58, 4, 2, '5:00pm', '2022-11-21', 'c8a7be17'),
-(59, 4, 1, '5:00pm', '2022-11-23', '2419c381'),
-(60, 4, 2, '5:00pm', '2022-11-23', '2419c381'),
-(62, 5, 2, '12:00pm', '2022-11-22', 'bafcc4b1'),
-(63, 5, 3, '12:00pm', '2022-11-22', 'bafcc4b1');
+(14, 37, 5, '9:00am', '2022-11-25', '3fa73315'),
+(39, 4, 5, '9:00am', '2022-11-25', 'cae5cc16'),
+(44, 6, 5, '9:00am', '2022-11-25', 'cae5cc16'),
+(47, 7, 5, '9:00am', '2022-11-25', '6051052c'),
+(48, 8, 5, '9:00am', '2022-11-25', '6051052c'),
+(49, 9, 5, '9:00am', '2022-11-25', '01213968'),
+(50, 10, 5, '9:00am', '2022-11-25', '01213968'),
+(51, 11, 5, '9:00am', '2022-11-25', '01213968'),
+(55, 13, 5, '9:00am', '2022-11-25', 'ac6d1039'),
+(56, 14, 5, '9:00am', '2022-11-25', 'ac6d1039'),
+(57, 1, 4, '5:00pm', '2022-11-21', 'c8a7be17'),
+(58, 2, 4, '5:00pm', '2022-11-21', 'c8a7be17'),
+(59, 1, 4, '5:00pm', '2022-11-23', '2419c381'),
+(60, 2, 4, '5:00pm', '2022-11-23', '2419c381'),
+(62, 2, 5, '12:00pm', '2022-11-22', 'bafcc4b1'),
+(63, 3, 5, '12:00pm', '2022-11-22', 'bafcc4b1');
 
 -- --------------------------------------------------------
 
@@ -353,6 +500,48 @@ INSERT INTO `ticket` (`tic_id`, `movie_id`, `seat_no`, `mtime`, `mdate`, `tid`) 
 CREATE TABLE `ticketspermovie` (
 `mid` int(11)
 ,`no of tickets` bigint(21)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `timedate`
+-- (See below for the actual view)
+--
+CREATE TABLE `timedate` (
+`floor` int(11)
+,`scr_no` int(11)
+,`timeday` varchar(21)
+,`capacity` int(11)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `timedate2`
+-- (See below for the actual view)
+--
+CREATE TABLE `timedate2` (
+`floor` int(11)
+,`scr_no` int(11)
+,`timeday` varchar(21)
+,`occupied` bigint(21)
+,`capacity` int(11)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `timedate3`
+-- (See below for the actual view)
+--
+CREATE TABLE `timedate3` (
+`floor` int(11)
+,`scr_no` int(11)
+,`timeday` varchar(21)
+,`occupied` bigint(21)
+,`capacity` int(11)
+,`ratioFull` decimal(27,4)
 );
 
 -- --------------------------------------------------------
@@ -417,6 +606,24 @@ INSERT INTO `transaction` (`trid`, `no_of_tickets`, `mode_of_pay`, `price`, `tda
 -- --------------------------------------------------------
 
 --
+-- Structure for view `aboveavgseats`
+--
+DROP TABLE IF EXISTS `aboveavgseats`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `aboveavgseats`  AS SELECT `screen`.`floor` AS `floor`, `screen`.`scr_no` AS `scr_no`, `screen`.`capacity` AS `capacity` FROM `screen` WHERE `screen`.`capacity` > (select avg(`screen`.`capacity`) from `screen`)  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `allnamer`
+--
+DROP TABLE IF EXISTS `allnamer`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `allnamer`  AS SELECT `employee`.`fname` AS `fname`, `employee`.`lname` AS `lname` FROM `employee` union select `customer`.`fname` AS `fname`,`customer`.`lname` AS `lname` from `customer` order by `fname`,`lname`  ;
+
+-- --------------------------------------------------------
+
+--
 -- Structure for view `collectionperday`
 --
 DROP TABLE IF EXISTS `collectionperday`;
@@ -435,6 +642,15 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
+-- Structure for view `custnemp`
+--
+DROP TABLE IF EXISTS `custnemp`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `custnemp`  AS SELECT `employee`.`fname` AS `fname`, `employee`.`lname` AS `lname` FROM `employee` intersect select `customer`.`fname` AS `fname`,`customer`.`lname` AS `lname` from `customer` order by `fname`,`lname`  ;
+
+-- --------------------------------------------------------
+
+--
 -- Structure for view `deptemployee`
 --
 DROP TABLE IF EXISTS `deptemployee`;
@@ -444,11 +660,110 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
+-- Structure for view `empdept`
+--
+DROP TABLE IF EXISTS `empdept`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `empdept`  AS SELECT `employee`.`empid` AS `empid`, `employee`.`fname` AS `fname`, `employee`.`lname` AS `lname`, `department`.`type` AS `departmentType` FROM (`employee` left join `department` on(`employee`.`dno` = `department`.`Dnumber`)) WHERE `employee`.`dno` = (select `department`.`Dnumber` from `department` where `department`.`type` = 'sound')  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `empnevercustomer`
+--
+DROP TABLE IF EXISTS `empnevercustomer`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `empnevercustomer`  AS SELECT `employee`.`fname` AS `fname`, `employee`.`lname` AS `lname` FROM `employee` WHERE !(`employee`.`fname` in (select `customer`.`fname` from `customer`)) ORDER BY `employee`.`fname` ASC  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `longestmovie`
+--
+DROP TABLE IF EXISTS `longestmovie`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `longestmovie`  AS SELECT `movie`.`mid` AS `mid`, `movie`.`title` AS `title`, max(`movie`.`duration_mins`) AS `max(``duration_mins``)` FROM `movie``movie`  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `minsal`
+--
+DROP TABLE IF EXISTS `minsal`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `minsal`  AS SELECT `employee`.`empid` AS `empid`, `employee`.`fname` AS `fname`, `employee`.`lname` AS `lname`, `employee`.`salary` AS `salary` FROM `employee` WHERE `employee`.`salary` = (select min(`employee`.`salary`) from `employee`)  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `moviemoderateduration`
+--
+DROP TABLE IF EXISTS `moviemoderateduration`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `moviemoderateduration`  AS SELECT `movie`.`mid` AS `mid`, `movie`.`screen_no` AS `screen_no`, `movie`.`duration_mins` AS `duration_mins`, `movie`.`title` AS `title` FROM `movie` WHERE `movie`.`duration_mins` between 120 and 165165  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `movieshowing`
+--
+DROP TABLE IF EXISTS `movieshowing`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `movieshowing`  AS SELECT `ticket`.`movie_id` AS `movie_id`, concat_ws(' ',`ticket`.`mdate`,`ticket`.`mtime`) AS `datetime`, `movie`.`title` AS `title`, `movie`.`duration_mins` AS `duration_mins`, `movie`.`screen_no` AS `screen_no` FROM (`ticket` join `movie` on(`ticket`.`movie_id` = `movie`.`mid`)) GROUP BY concat_ws(' ',`ticket`.`mdate`,`ticket`.`mtime`)  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `nooftickets`
+--
+DROP TABLE IF EXISTS `nooftickets`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `nooftickets`  AS SELECT `transaction`.`trid` AS `trid`, count(`ticket`.`tid`) AS `no_of_tickets`, `transaction`.`mode_of_pay` AS `mode_of_pay`, `transaction`.`price` AS `price`, `transaction`.`tdate` AS `tdate`, `transaction`.`cust_phone` AS `cust_phone`, `transaction`.`time` AS `time` FROM (`transaction` join `ticket` on(`transaction`.`trid` = `ticket`.`tid`)) GROUP BY `ticket`.`tid``tid`  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `sceenmovie`
+--
+DROP TABLE IF EXISTS `sceenmovie`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `sceenmovie`  AS SELECT `screen`.`scr_no` AS `scr_no`, `movie`.`title` AS `movieTitle` FROM (`screen` left join `movie` on(`screen`.`scr_no` = `movie`.`screen_no`)) ORDER BY `screen`.`scr_no` ASC  ;
+
+-- --------------------------------------------------------
+
+--
 -- Structure for view `ticketspermovie`
 --
 DROP TABLE IF EXISTS `ticketspermovie`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `ticketspermovie`  AS SELECT `movie`.`mid` AS `mid`, count(`ticket`.`seat_no`) AS `no of tickets` FROM (`movie` join `ticket` on(`movie`.`mid` = `ticket`.`movie_id`)) GROUP BY `movie`.`mid``mid`  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `timedate`
+--
+DROP TABLE IF EXISTS `timedate`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `timedate`  AS SELECT `screen`.`floor` AS `floor`, `screen`.`scr_no` AS `scr_no`, concat_ws(',',`ticket`.`mdate`,`ticket`.`mtime`) AS `timeday`, `screen`.`capacity` AS `capacity` FROM ((`screen` join `movie` on(`screen`.`scr_no` = `movie`.`screen_no`)) join `ticket` on(`movie`.`mid` = `ticket`.`movie_id`))  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `timedate2`
+--
+DROP TABLE IF EXISTS `timedate2`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `timedate2`  AS SELECT `timedate`.`floor` AS `floor`, `timedate`.`scr_no` AS `scr_no`, `timedate`.`timeday` AS `timeday`, count(`timedate`.`timeday`) AS `occupied`, `timedate`.`capacity` AS `capacity` FROM `timedate` GROUP BY `timedate`.`timeday` ORDER BY `timedate`.`timeday` ASC  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `timedate3`
+--
+DROP TABLE IF EXISTS `timedate3`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `timedate3`  AS SELECT `timedate2`.`floor` AS `floor`, `timedate2`.`scr_no` AS `scr_no`, `timedate2`.`timeday` AS `timeday`, `timedate2`.`occupied` AS `occupied`, `timedate2`.`capacity` AS `capacity`, `timedate2`.`occupied`/ `timedate2`.`capacity` * 100 AS `ratioFull` FROM `timedate2` ORDER BY `timedate2`.`timeday` ASC  ;
 
 -- --------------------------------------------------------
 
@@ -467,8 +782,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- Indexes for table `admins`
 --
 ALTER TABLE `admins`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `customer`
@@ -486,15 +800,15 @@ ALTER TABLE `customer_audit`
 -- Indexes for table `department`
 --
 ALTER TABLE `department`
-  ADD PRIMARY KEY (`Dnumber`),
-  ADD UNIQUE KEY `uniquetype` (`type`);
+  ADD PRIMARY KEY (`Dnumber`);
 
 --
 -- Indexes for table `employee`
 --
 ALTER TABLE `employee`
   ADD PRIMARY KEY (`empid`),
-  ADD KEY `fk_dept_no` (`dno`);
+  ADD KEY `fk_dept_no` (`dno`),
+  ADD KEY `fk_admin_no` (`adder_id`);
 
 --
 -- Indexes for table `maintains`
@@ -551,19 +865,19 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `department`
 --
 ALTER TABLE `department`
-  MODIFY `Dnumber` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `Dnumber` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `empid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `empid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `movie`
 --
 ALTER TABLE `movie`
-  MODIFY `mid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `mid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `screen`
@@ -585,7 +899,8 @@ ALTER TABLE `ticket`
 -- Constraints for table `employee`
 --
 ALTER TABLE `employee`
-  ADD CONSTRAINT `fk_dept_no` FOREIGN KEY (`dno`) REFERENCES `department` (`Dnumber`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_admin_no` FOREIGN KEY (`adder_id`) REFERENCES `admins` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_dept_no` FOREIGN KEY (`Dno`) REFERENCES `department` (`Dnumber`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `maintains`
@@ -605,7 +920,7 @@ ALTER TABLE `movie`
 --
 ALTER TABLE `ticket`
   ADD CONSTRAINT `fk_movie_id` FOREIGN KEY (`movie_id`) REFERENCES `movie` (`mid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_trid` FOREIGN KEY (`tid`) REFERENCES `transaction` (`trid`);
+  ADD CONSTRAINT `fk_trid` FOREIGN KEY (`tid`) REFERENCES `transaction` (`trid`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `transaction`
